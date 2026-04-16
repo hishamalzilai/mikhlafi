@@ -20,9 +20,10 @@ export const YemeniEagle = PortalLogo;
 export const navLinks = [
   { id: 'home', path: '/', title: 'الرئيسية' },
   { id: 'bio', path: '/bio', title: 'السيرة والمحطات' },
-  { id: 'vision', path: '/vision', title: 'مقالات ودراسات' },
+  { id: 'vision', path: '/vision', title: 'دراسات وأبحاث' },
+  { id: 'articles', path: '/articles', title: 'مقالات' },
   { id: 'archive', path: '/archive', title: 'الأرشيف الشامل' },
-  { id: 'news', path: '/news', title: 'تصريحات ومواقف' },
+  { id: 'news', path: '/news', title: 'أخبار وآراء' },
   { id: 'library', path: '/library', title: 'المكتبة المرئية' },
   { id: 'contact', path: '/contact', title: 'تواصل' },
 ];
@@ -149,10 +150,10 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
               <h4 className="font-black text-slate-900 text-xl mb-12 border-b border-slate-100 pb-4 inline-block tracking-[0.2em]">تواصل مباشر</h4>
               <ul className="space-y-6 text-sm font-bold text-slate-500">
                 <li className="flex items-center justify-center md:justify-start gap-4 hover:text-[#b18c39] transition-colors cursor-pointer group" dir="ltr">
-                  <Mail className="text-slate-300 group-hover:text-[#b18c39] transition-colors shrink-0 w-5 h-5" /> <span className="text-right">info@mikhlafi-advisor.ye</span>
+                  <Mail className="text-slate-300 group-hover:text-[#b18c39] transition-colors shrink-0 w-5 h-5" /> <span className="text-right">info@abdulmalik-almekhlafi.com</span>
                 </li>
                 <li className="flex items-center justify-center md:justify-start gap-4 hover:text-[#b18c39] transition-colors cursor-pointer group" dir="ltr">
-                  <Globe className="text-slate-300 group-hover:text-[#b18c39] transition-colors shrink-0 w-5 h-5" /> <span className="text-right">mikhlafi-advisor.ye</span>
+                  <Globe className="text-slate-300 group-hover:text-[#b18c39] transition-colors shrink-0 w-5 h-5" /> <span className="text-right">abdulmalik-almekhlafi.com</span>
                 </li>
                 <li className="pt-10 flex gap-6 justify-center md:justify-start w-full">
                   <div className="w-12 h-12 bg-slate-50 flex items-center justify-center hover:bg-[#b18c39] hover:text-white transition-all cursor-pointer border border-slate-200 font-black text-xl italic shadow-sm shadow-[#b18c39]/10">X</div>

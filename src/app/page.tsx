@@ -25,7 +25,7 @@ export default function Home() {
           </div>
           <div className="lg:col-span-5 order-1 lg:order-2">
             <div className="relative aspect-[3/4] w-full max-w-sm mx-auto shadow-2xl border-b-[16px] border-[#b18c39] bg-slate-200 overflow-hidden flex items-center justify-center group cursor-pointer hover:shadow-3xl transition-all">
-               <img src="/ol45hZcGOgfrIsNajVjc.webp" alt="عبد الملك عبد الجليل المخلافي" className="absolute inset-0 w-full h-full object-cover transform group-hover:scale-105 transition-all duration-700" />
+               <img src="/0393d5d1-14d1-49e5-88c5-9353b92dd677.jpeg" alt="عبد الملك عبد الجليل المخلافي" className="absolute inset-0 w-full h-full object-cover transform group-hover:scale-105 transition-all duration-700" />
                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent"></div>
             </div>
           </div>
@@ -64,7 +64,7 @@ export default function Home() {
            </div>
         </section>
 
-        {/* 4. سكشن الفكر السياسي والرؤية */}
+        {/* 3. سكشن الفكر السياسي والرؤية */}
         <section className="grid lg:grid-cols-2 gap-12 md:gap-24 items-center">
            <div className="order-2 lg:order-1 relative p-8 md:p-16 bg-slate-50 border-r-[12px] border-[#b18c39] shadow-inner ml-[-1rem] md:ml-[-2rem] lg:ml-0">
               <Quote className="text-slate-200 w-24 h-24 absolute top-4 left-4" />
@@ -80,7 +80,7 @@ export default function Home() {
            <div className="order-1 lg:order-2 space-y-6">
               <div className="flex items-center gap-3 mb-4">
                  <BookOpen className="text-[#b18c39] w-8 h-8" />
-                 <h3 className="text-3xl md:text-5xl font-black text-slate-900 tracking-tight">مقالات ودراسات</h3>
+                 <h3 className="text-3xl md:text-5xl font-black text-slate-900 tracking-tight">دراسات وأبحاث</h3>
               </div>
               <p className="text-slate-600 leading-relaxed font-bold text-lg text-justify border-r-4 border-slate-200 pr-6">
                 مساحة مخصصة لتوثيق المقالات الصحفية والأبحاث، المواقف النظرية، والدراسات المعمقة. نستعرض هنا المرتكزات الفكرية التي ساهمت في تشكيل السياسات وتمثيل الشرعية في المحافل الديمقراطية.
@@ -108,39 +108,44 @@ export default function Home() {
            </div>
         </section>
 
-        {/* 5. سكشن الإنتاج المرئي والبياني (المكتبة الرقمية) */}
-        <section className="bg-[#faf5ec] p-10 md:p-16 border-t-8 border-slate-200 relative overflow-hidden mx-[-1rem] md:mx-[-2rem] lg:mx-0 lg:rounded-none">
+        {/* 4. سكشن الإنتاج المرئي (المكتبة الرقمية) */}
+        <section className="bg-slate-950 p-10 md:p-16 border-t-8 border-[#b18c39] relative overflow-hidden mx-[-1rem] md:mx-[-2rem] lg:mx-0 lg:rounded-none shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
+           <div className="absolute inset-0 bg-[url('/pattern.png')] opacity-[0.03] mix-blend-screen pointer-events-none"></div>
            <div className="relative z-10 flex flex-col items-center text-center space-y-6 mb-16">
-              <span className="bg-white px-4 py-1.5 text-xs font-black text-[#b18c39] uppercase tracking-[0.2em] shadow-sm border border-slate-200">المكتبة الرقمية</span>
-              <h3 className="text-3xl md:text-5xl font-black text-slate-900 tracking-tight">الإنتاج المرئي والبياني</h3>
-              <p className="text-slate-600 font-bold max-w-3xl text-lg opacity-90 leading-relaxed">
-                 تقديم التاريخ السياسي المعاصر بأسلوب رقمي يسهل استهلاكه ومشاركته. فيديوجرافيك يسجل أهم المواقف، وإنفوجرافيك يلخص البيانات والمعلومات السيادية بوضوح.
+              <span className="bg-[#b18c39]/10 text-[#b18c39] px-4 py-1.5 text-xs font-black uppercase tracking-[0.2em] shadow-sm border border-[#b18c39]/30 rounded-full backdrop-blur-sm">المكتبة الرقمية الرائدة</span>
+              <h3 className="text-3xl md:text-5xl font-black text-white tracking-tight drop-shadow-md">الإنتاج المرئي</h3>
+              <p className="text-slate-400 font-bold max-w-3xl text-lg leading-relaxed">
+                 نقدم التاريخ السياسي المعاصر عبر وسائط رقمية حديثة؛ فيديوجرافيك يوثق اللحظات الحاسمة، ويجسد المواقف السيادية بوضوح واحترافية.
               </p>
            </div>
            <div className="grid lg:grid-cols-2 gap-10">
-              <div className="group relative overflow-hidden aspect-video bg-slate-900 border-4 border-white shadow-xl flex items-center justify-center">
-                 <div className="absolute inset-0 bg-slate-800 opacity-60 group-hover:opacity-40 transition-all duration-700"></div>
+              <div className="group relative overflow-hidden aspect-video bg-black border border-slate-800 shadow-2xl flex items-center justify-center">
+                 <img src="https://images.unsplash.com/photo-1495020689067-958852a7765e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="" className="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:opacity-60 transition-all duration-1000 group-hover:scale-110 grayscale group-hover:grayscale-0" />
                  <div className="relative z-10 text-center flex flex-col items-center w-full p-8 translate-y-4 group-hover:translate-y-0 transition-all duration-500">
-                    <Play className="text-white w-20 h-20 opacity-80 mb-6 drop-shadow-xl group-hover:scale-110 group-hover:text-[#b18c39] transition-all" />
+                    <div className="w-20 h-20 bg-[#b18c39]/90 rounded-full flex items-center justify-center mb-6 shadow-2xl group-hover:scale-110 transition-all">
+                       <Play className="text-white w-10 h-10 ml-1" />
+                    </div>
                     <h4 className="font-black text-3xl text-white drop-shadow-md mb-2">فيديوجرافيك المواقف</h4>
-                    <p className="text-slate-300 font-bold text-sm mb-6">توثيق مرئي لأهم الخطابات والمقابلات والمحطات المرئية</p>
-                    <Link href="/library" className="bg-[#b18c39] text-white px-8 py-3 rounded-none font-black text-xs hover:bg-slate-800 transition-all flex items-center gap-2 shadow-xl opacity-0 group-hover:opacity-100">استعرض القسم المرئي <ArrowLeft size={14}/></Link>
+                    <p className="text-slate-300 font-bold text-sm mb-6">توثيق مرئي لأهم الخطابات والمقابلات والمحطات السيادية</p>
+                    <Link href="/library" className="bg-[#b18c39] text-white px-8 py-3 rounded-none font-black text-xs hover:bg-white hover:text-slate-900 transition-all flex items-center gap-2 shadow-xl opacity-0 group-hover:opacity-100">استعرض الفيديوهات <ArrowLeft size={14}/></Link>
                  </div>
               </div>
-              <div className="group relative overflow-hidden aspect-video bg-slate-800 border-4 border-white shadow-xl flex items-center justify-center">
-                 <div className="absolute inset-0 bg-slate-700 opacity-60 group-hover:opacity-40 transition-all duration-700"></div>
+              <div className="group relative overflow-hidden aspect-video bg-black border border-slate-800 shadow-2xl flex items-center justify-center">
+                 <img src="https://images.unsplash.com/photo-1577900236166-50e50942d962?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="" className="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:opacity-60 transition-all duration-1000 group-hover:scale-110 grayscale group-hover:grayscale-0" />
                  <div className="relative z-10 text-center flex flex-col items-center w-full p-8 translate-y-4 group-hover:translate-y-0 transition-all duration-500">
-                    <BarChart3 className="text-white w-20 h-20 opacity-80 mb-6 drop-shadow-xl group-hover:scale-110 group-hover:text-[#b18c39] transition-all" />
-                    <h4 className="font-black text-3xl text-white drop-shadow-md mb-2">إنفوجرافيك البيانات</h4>
-                    <p className="text-slate-300 font-bold text-sm mb-6">بطاقات ورسوم معلوماتية تلخص الرؤى والمواقف الوطنية</p>
-                    <Link href="/library" className="bg-[#b18c39] text-white px-8 py-3 rounded-none font-black text-xs hover:bg-slate-800 transition-all flex items-center gap-2 shadow-xl opacity-0 group-hover:opacity-100">استعرض القسم البياني <ArrowLeft size={14}/></Link>
+                    <div className="w-20 h-20 bg-slate-800/90 rounded-full border border-slate-700 flex items-center justify-center mb-6 shadow-2xl group-hover:bg-[#b18c39] group-hover:border-[#b18c39] transition-all">
+                       <Users className="text-white w-10 h-10" />
+                    </div>
+                    <h4 className="font-black text-3xl text-white drop-shadow-md mb-2">معرض الصور الوطنية</h4>
+                    <p className="text-slate-300 font-bold text-sm mb-6">لقطات توثيقية ترصد النشاط الدبلوماسي والمشاركات الدولية</p>
+                    <Link href="/library" className="bg-[#b18c39] text-white px-8 py-3 rounded-none font-black text-xs hover:bg-white hover:text-slate-900 transition-all flex items-center gap-2 shadow-xl opacity-0 group-hover:opacity-100">استعرض الصور <ArrowLeft size={14}/></Link>
                  </div>
               </div>
            </div>
         </section>
 
         {/* 5. سكشن خزانة الوثائق (Featured Archive) */}
-        <section className="border-t-8 border-[#b18c39] bg-white p-12 md:p-20 shadow-xl relative text-center overflow-hidden mb-16">
+        <section className="border-t-8 border-[#b18c39] bg-white p-12 md:p-20 shadow-xl relative text-center overflow-hidden">
            <Archive className="text-slate-50 w-[30rem] h-[30rem] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-80 rotate-12" />
            <div className="relative z-10 flex flex-col items-center max-w-3xl mx-auto space-y-8">
               <span className="bg-[#b18c39]/10 text-[#b18c39] px-4 py-1.5 font-black uppercase tracking-[0.2em] border border-[#b18c39]/30 text-xs shadow-inner">الذاكرة الوطنية</span>
@@ -159,7 +164,7 @@ export default function Home() {
            <div className="flex flex-col md:flex-row justify-between items-start md:items-end border-b-4 border-slate-200 pb-5 gap-4 md:gap-0">
               <h3 className="text-2xl md:text-4xl font-black text-slate-900 flex items-center gap-3">
                 <Newspaper className="text-[#b18c39] w-10 h-10 shrink-0" />
-                تصريحات ومواقف
+                أخبار وآراء
               </h3>
               <Link href="/news" className="text-xs font-black text-slate-500 hover:text-slate-900 transition-colors uppercase tracking-widest mt-2 md:mt-0">سجل التصريحات الكامل</Link>
            </div>
