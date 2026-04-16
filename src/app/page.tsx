@@ -25,7 +25,7 @@ export default function Home() {
           </div>
           <div className="lg:col-span-5 order-1 lg:order-2">
             <div className="relative aspect-[3/4] w-full max-w-sm mx-auto shadow-2xl border-b-[16px] border-[#b18c39] bg-slate-200 overflow-hidden flex items-center justify-center group cursor-pointer hover:shadow-3xl transition-all">
-               <img src="/0393d5d1-14d1-49e5-88c5-9353b92dd677.jpeg" alt="عبد الملك عبد الجليل المخلافي" className="absolute inset-0 w-full h-full object-cover transform group-hover:scale-105 transition-all duration-700" />
+               <img src="/ol45hZcGOgfrIsNajVjc.webp" alt="عبد الملك عبد الجليل المخلافي" className="absolute inset-0 w-full h-full object-cover transform group-hover:scale-105 transition-all duration-700" />
                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent"></div>
             </div>
           </div>
