@@ -1,10 +1,13 @@
 import type { Metadata } from 'next';
 import './globals.css';
-import MainLayout from '@/components/MainLayout';
 
 export const metadata: Metadata = {
-  title: 'عبدالملك المخلافي - البوابة الرسمية',
+  title: 'الموقع الرسمي | عبدالملك المخلافي',
   description: 'البوابة الرقمية الشاملة والأرشيف التاريخي للمفكر والسياسي اليمني عبدالملك المخلافي.',
+  icons: {
+    icon: '/icon.png',
+    apple: '/apple-icon.png',
+  },
 };
 
 export const viewport = {
@@ -22,7 +25,7 @@ export default function RootLayout({
   return (
     <html lang="ar" dir="rtl">
       <body className="min-h-screen selection:bg-amber-100 selection:text-amber-900 bg-[#fafaf9] text-[#1c1917]">
-        <MainLayout>{children}</MainLayout>
+        {children}
       </body>
     </html>
   );

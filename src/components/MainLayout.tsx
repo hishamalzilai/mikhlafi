@@ -8,11 +8,13 @@ import {
   Menu, 
   X, 
   Globe, 
-  Mail
+  Mail,
+  Command
 } from 'lucide-react';
+import GlobalSearch from './GlobalSearch';
 
 export const PortalLogo = ({ className }: { className?: string }) => (
-  <img src="/new-logo.jpeg" alt="البوابة الرقمية لعبدالملك المخلافي" className={`object-contain mix-blend-multiply ${className || ''}`} />
+  <img src="/logoedit.png" alt="الموقع الرسمي لعبدالملك المخلافي" className={`object-contain mix-blend-multiply ${className || ''}`} />
 );
 
 export const YemeniEagle = PortalLogo;
@@ -31,6 +33,7 @@ export const navLinks = [
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [currentDate, setCurrentDate] = useState('');
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const pathname = usePathname();
 
   useEffect(() => {
@@ -40,6 +43,15 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
     } catch (e) {
       setCurrentDate(new Date().toLocaleDateString('ar-EG'));
     }
+
+    const handleCmdK = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        setIsSearchOpen(true);
+      }
+    };
+    window.addEventListener('keydown', handleCmdK);
+    return () => window.removeEventListener('keydown', handleCmdK);
   }, []);
 
   return (
@@ -47,20 +59,22 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
       <div className="bg-[#f5f5f4] text-slate-700 py-2 text-[10px] md:text-xs border-b border-slate-200">
         <div className="max-w-[1440px] mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-2 md:gap-0">
           <div className="flex items-center gap-4">
-            <button className="flex items-center gap-1 hover:text-[#b18c39] transition-colors font-bold tracking-tight">
-              <Globe size={14} /> ENGLISH
-            </button>
-            <div className="h-3 w-px bg-slate-300"></div>
             <span className="font-bold opacity-80 uppercase hidden sm:block">{currentDate}</span>
           </div>
           <div className="flex items-center gap-3 w-full md:w-auto mt-1 md:mt-0">
              <div className="relative w-full md:w-auto">
-                <input 
-                  type="text" 
-                  placeholder="البحث في البوابة..." 
-                  className="bg-white border border-slate-200 rounded-none py-1.5 md:py-1 px-8 text-xs focus:ring-1 focus:ring-[#b18c39] transition-all w-full md:w-56 outline-none"
-                />
-                <Search size={14} className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400" />
+                <button 
+                  onClick={() => setIsSearchOpen(true)}
+                  className="bg-white border border-slate-200 rounded-lg py-1.5 px-4 pr-10 text-xs text-slate-400 hover:text-slate-600 transition-all w-full md:w-64 outline-none flex items-center justify-between group shadow-sm hover:shadow-md hover:border-[#b18c39]/50"
+                >
+                  <span className="font-bold flex items-center gap-1.5">
+                     <Search size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 group-hover:text-[#b18c39] transition-colors" />
+                     البحث في البوابة...
+                  </span>
+                  <span className="hidden sm:flex items-center gap-1 bg-slate-100 text-slate-400 px-1.5 py-0.5 rounded text-[10px] uppercase font-mono font-bold tracking-widest border border-slate-200">
+                     <Command size={10} /> K
+                  </span>
+                </button>
              </div>
           </div>
         </div>
@@ -70,10 +84,6 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
         <div className="max-w-[1440px] mx-auto px-4 flex flex-col md:flex-row justify-between items-center relative z-10 gap-3 md:gap-0">
           <div className="flex flex-col md:flex-row items-center gap-4 md:gap-5 text-center md:text-right">
             <PortalLogo className="h-20 md:h-28 w-auto" /> 
-          </div>
-          <div className="hidden lg:block text-left opacity-20" dir="ltr">
-             <p className="text-xs font-black text-slate-900 uppercase tracking-[0.2em] leading-none">The Digital Portal</p>
-             <p className="text-[9px] md:text-[10px] font-bold text-slate-800 uppercase mt-1">Abdulmalik Al-Mekhlafi</p>
           </div>
         </div>
       </header>
@@ -130,7 +140,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
                 <PortalLogo className="h-24 md:h-32 w-auto" />
               </div>
               <p className="text-lg md:text-xl text-slate-500 leading-relaxed max-w-lg font-bold md:pr-16 tracking-tight">
-                البوابة الرسمية الشاملة والأرشيف التاريخي للمفكر والسياسي اليمني عبدالملك المخلافي، بهدف توثيق المواقف، الأبحاث، وحفظ الذاكرة الوطنية المعاصرة.
+                الموقع الرسمي والأرشيف التاريخي للمفكر والسياسي اليمني عبدالملك المخلافي، بهدف توثيق المواقف، الأبحاث، وحفظ الذاكرة الوطنية المعاصرة.
               </p>
             </div>
             
@@ -164,14 +174,15 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
           </div>
           
           <div className="border-t border-slate-100 pt-16 flex flex-col md:flex-row justify-between items-center gap-4 text-xs font-bold text-slate-600">
-            <p>© 2026 جميع الحقوق محفوظة - البوابة الرسمية لعبدالملك المخلافي</p>
-            <p className="tracking-widest uppercase">The Official Portal</p>
+            <p>© 2026 جميع الحقوق محفوظة - الموقع الرسمي لعبدالملك المخلافي</p>
           </div>
         </div>
         <div className="absolute bottom-0 right-0 w-full h-full opacity-[0.02] pointer-events-none">
            <YemeniEagle className="w-[60rem] h-[60rem] translate-x-1/4 translate-y-1/4" />
         </div>
       </footer>
+
+      <GlobalSearch isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
     </>
   );
 }
