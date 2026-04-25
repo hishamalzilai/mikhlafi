@@ -37,11 +37,19 @@ export default function LibraryManagement() {
 
   const fetchItems = async () => {
     setLoading(true);
-    // Assuming table is 'media_library' or similar based on typical naming. Let's try 'media_library'. If it fails, maybe just 'library'. Let's use 'media_library' or wait.. The client query in public page is likely 'media_library'.
-    // If not, we might need to adjust table name. 
-    const { data } = await supabase.from('media_library').select('*').order('created_at', { ascending: false });
-    if (data) setItems(data);
-    setLoading(false);
+    try {
+      const { getLibraryAction } = await import('../library-actions');
+      const result = await getLibraryAction();
+      if (result.success && result.data) {
+        setItems(result.data);
+      } else {
+        console.error(result.error);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleFileUpload = async (file: File) => {

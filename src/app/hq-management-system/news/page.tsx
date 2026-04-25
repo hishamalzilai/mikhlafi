@@ -24,9 +24,19 @@ export default function AdminNewsPage() {
 
   const fetchNews = async () => {
     setLoading(true);
-    const { data, error } = await supabase.from('news').select('*').order('created_at', { ascending: false });
-    if (data) setNews(data);
-    setLoading(false);
+    try {
+      const { getNewsAction } = await import('../news-actions');
+      const result = await getNewsAction();
+      if (result.success && result.data) {
+        setNews(result.data);
+      } else {
+        console.error(result.error);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {

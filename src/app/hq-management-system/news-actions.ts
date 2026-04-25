@@ -5,6 +5,23 @@ import { checkAdminSession } from '@/app/hq-management-system/actions';
 import { newsSchema } from '@/lib/schemas';
 import { revalidatePath } from 'next/cache';
 
+export async function getNewsAction() {
+  const isAdmin = await checkAdminSession();
+  if (!isAdmin) return { success: false, error: 'Unauthorized' };
+
+  try {
+    const { data, error } = await supabaseAdmin
+      .from('news')
+      .select('*')
+      .order('created_at', { ascending: false });
+    if (error) throw error;
+    return { success: true, data };
+  } catch (err: any) {
+    console.error("[NewsAction] fetch error:", err);
+    return { success: false, error: err.message };
+  }
+}
+
 export async function saveNewsAction(formData: FormData) {
   const isAdmin = await checkAdminSession();
   if (!isAdmin) return { success: false, error: 'Unauthorized' };

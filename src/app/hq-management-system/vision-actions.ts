@@ -5,6 +5,22 @@ import { checkAdminSession } from '@/app/hq-management-system/actions';
 import { studySchema } from '@/lib/schemas';
 import { revalidatePath } from 'next/cache';
 
+export async function getStudiesAction() {
+  const isAdmin = await checkAdminSession();
+  if (!isAdmin) return { success: false, error: 'Unauthorized' };
+
+  try {
+    const { data, error } = await supabaseAdmin
+      .from('studies')
+      .select('*')
+      .order('published_date', { ascending: false });
+    if (error) throw error;
+    return { success: true, data };
+  } catch (err: any) {
+    return { success: false, error: err.message };
+  }
+}
+
 export async function saveStudyAction(formData: FormData) {
   const isAdmin = await checkAdminSession();
   if (!isAdmin) return { success: false, error: 'Unauthorized' };

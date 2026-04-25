@@ -42,8 +42,13 @@ export default function TestimonialsAdmin() {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const data = await getTestimonials();
-      setTestimonials(data);
+      const { getTestimonialsAction } = await import('../testimonials-actions');
+      const result = await getTestimonialsAction();
+      if (result.success && result.data) {
+        setTestimonials(result.data);
+      } else {
+        console.error(result.error);
+      }
     } catch (err) {
       console.error(err);
     } finally {

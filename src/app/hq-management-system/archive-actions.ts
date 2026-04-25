@@ -4,6 +4,22 @@ import { supabaseAdmin } from '@/lib/supabase-admin';
 import { checkAdminSession } from '@/app/hq-management-system/actions';
 import { revalidatePath } from 'next/cache';
 
+export async function getArchiveItemsAction() {
+  const isAdmin = await checkAdminSession();
+  if (!isAdmin) return { success: false, error: 'Unauthorized' };
+
+  try {
+    const { data, error } = await supabaseAdmin
+      .from('archive')
+      .select('*')
+      .order('published_date', { ascending: false });
+    if (error) throw error;
+    return { success: true, data };
+  } catch (err: any) {
+    return { success: false, error: err.message };
+  }
+}
+
 export async function saveArchiveItemAction(formData: FormData) {
   const isAdmin = await checkAdminSession();
   if (!isAdmin) return { success: false, error: 'Unauthorized' };

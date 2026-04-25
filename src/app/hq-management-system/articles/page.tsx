@@ -24,14 +24,20 @@ export default function AdminArticlesPage() {
 
   const fetchArticles = async () => {
     setLoading(true);
-    const { data, error } = await supabase.from('articles').select('*').order('created_at', { ascending: false });
-    if (data) setArticles(data);
-    setLoading(false);
+    try {
+      const { getArticlesAction } = await import('../articles-actions');
+      const result = await getArticlesAction();
+      if (result.success && result.data) {
+        setArticles(result.data);
+      } else {
+        console.error(result.error);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
   };
-
-  useEffect(() => {
-    fetchArticles();
-  }, []);
 
   const resetForm = () => {
     setIsAdding(false);

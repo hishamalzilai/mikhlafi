@@ -1,6 +1,22 @@
 "use server";
 
 import { revalidatePath } from 'next/cache';
+
+export async function getTestimonialsAction() {
+  const isAdmin = await checkAdminSession();
+  if (!isAdmin) return { success: false, error: 'Unauthorized' };
+
+  try {
+    const { data, error } = await supabase
+      .from('testimonials')
+      .select('*')
+      .order('created_at', { ascending: false });
+    if (error) throw error;
+    return { success: true, data };
+  } catch (err: any) {
+    return { success: false, error: err.message };
+  }
+}
 import { checkAdminSession } from './actions';
 import { testimonialSchema } from '@/lib/schemas';
 import { supabaseAdmin as supabase } from '@/lib/supabase-admin';

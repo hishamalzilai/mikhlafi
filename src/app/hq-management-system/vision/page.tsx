@@ -27,9 +27,19 @@ export default function AdminStudiesPage() {
 
   const fetchStudies = async () => {
     setLoading(true);
-    const { data, error } = await supabase.from('studies').select('*').order('created_at', { ascending: false });
-    if (data) setStudies(data);
-    setLoading(false);
+    try {
+      const { getStudiesAction } = await import('../vision-actions');
+      const result = await getStudiesAction();
+      if (result.success && result.data) {
+        setStudies(result.data);
+      } else {
+        console.error(result.error);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {

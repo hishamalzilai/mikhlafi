@@ -5,6 +5,23 @@ import { checkAdminSession } from '@/app/hq-management-system/actions';
 import { articleSchema } from '@/lib/schemas';
 import { revalidatePath } from 'next/cache';
 
+export async function getArticlesAction() {
+  const isAdmin = await checkAdminSession();
+  if (!isAdmin) return { success: false, error: 'Unauthorized' };
+
+  try {
+    const { data, error } = await supabaseAdmin
+      .from('articles')
+      .select('*')
+      .order('id', { ascending: false });
+    if (error) throw error;
+    return { success: true, data };
+  } catch (err: any) {
+    console.error("[ArticlesAction] fetch error:", err);
+    return { success: false, error: err.message };
+  }
+}
+
 export async function saveArticleAction(formData: FormData) {
   const isAdmin = await checkAdminSession();
   if (!isAdmin) return { success: false, error: 'Unauthorized' };
@@ -28,15 +45,13 @@ export async function saveArticleAction(formData: FormData) {
     // Validate with Zod
     articleSchema.parse(articleData);
 
-    if (id) {
-      // Update
+    if (id && id !== "null" && id !== "undefined") {
       const { error } = await supabaseAdmin
         .from('articles')
         .update(articleData)
         .eq('id', id);
       if (error) throw error;
     } else {
-      // Insert
       const { error } = await supabaseAdmin
         .from('articles')
         .insert([articleData]);
@@ -48,7 +63,7 @@ export async function saveArticleAction(formData: FormData) {
     
     return { success: true };
   } catch (err: any) {
-    console.error("Save Article Error:", err);
+    console.error("[ArticlesAction] save error:", err);
     return { success: false, error: err.message || "حدث خطأ غير متوقع" };
   }
 }
@@ -65,6 +80,7 @@ export async function deleteArticleAction(id: number) {
     revalidatePath('/hq-management-system/articles');
     return { success: true };
   } catch (err: any) {
+    console.error("[ArticlesAction] delete error:", err);
     return { success: false, error: err.message };
   }
 }

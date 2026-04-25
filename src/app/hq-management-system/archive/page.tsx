@@ -43,9 +43,19 @@ export default function AdminArchivePage() {
 
   const fetchItems = async () => {
     setLoading(true);
-    const { data } = await supabase.from('archive').select('*').order('created_at', { ascending: false });
-    if (data) setItems(data);
-    setLoading(false);
+    try {
+      const { getArchiveItemsAction } = await import('../archive-actions');
+      const result = await getArchiveItemsAction();
+      if (result.success && result.data) {
+        setItems(result.data);
+      } else {
+        console.error(result.error);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => { fetchItems(); }, []);
