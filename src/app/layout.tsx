@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     siteName: 'عبدالملك المخلافي',
     images: [
       {
-        url: '/ol45hZcGOgfrIsNajVjc.webp',
+        url: '/newsizelogo.png',
         width: 1200,
         height: 630,
         alt: 'عبدالملك المخلافي',
