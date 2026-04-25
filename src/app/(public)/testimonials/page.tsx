@@ -3,6 +3,7 @@ import { getTestimonials } from '../../hq-management-system/testimonials-actions
 import TestimonialsListClient from './TestimonialsListClient';
 
 export const revalidate = 60;
+export const dynamic = 'force-dynamic';
 
 export default async function TestimonialsPage() {
   const testimonials = await getTestimonials();

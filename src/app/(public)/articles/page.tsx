@@ -2,6 +2,7 @@ import { supabase } from '@/lib/supabase';
 import ArticlesListClient from './ArticlesListClient';
 
 export const revalidate = 3600;
+export const dynamic = 'force-dynamic';
 
 async function getArticles() {
   const { data } = await supabase

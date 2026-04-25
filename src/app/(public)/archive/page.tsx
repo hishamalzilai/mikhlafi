@@ -3,6 +3,7 @@ import ArchiveListClient from './ArchiveListClient';
 import { Search } from 'lucide-react';
 
 export const revalidate = 3600;
+export const dynamic = 'force-dynamic';
 
 async function getArchive() {
   const { data } = await supabase
