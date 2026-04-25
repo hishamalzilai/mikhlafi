@@ -1,11 +1,12 @@
-import { supabase } from '@/lib/supabase';
+import { supabaseAdmin } from '@/lib/supabase-admin';
 import LibraryListClient from './LibraryListClient';
 import { Film } from 'lucide-react';
 
 export const revalidate = 3600;
+export const dynamic = 'force-dynamic';
 
 async function getMedia() {
-  const { data } = await supabase
+  const { data } = await supabaseAdmin
     .from('media_library')
     .select('*')
     .order('id', { ascending: false });
@@ -32,7 +33,7 @@ export default async function LibraryPage() {
                المكتبة المرئية
             </h1>
             <p className="text-slate-400 font-bold max-w-3xl text-xl mt-2 leading-relaxed">
-              نافذة بصرية متكاملة توثق المسيرة الوطنية عبر الصور والمقاطع المرئية بأسلوب عصري.
+               نافذة بصرية متكاملة توثق المسيرة الوطنية عبر الصور والمقاطع المرئية بأسلوب عصري.
             </p>
          </div>
       </div>

@@ -1,13 +1,13 @@
-import { supabase } from '@/lib/supabase';
+import { supabaseAdmin } from '@/lib/supabase-admin';
 import ArticlesListClient from './ArticlesListClient';
 
 export const revalidate = 3600;
 export const dynamic = 'force-dynamic';
 
 async function getArticles() {
-  const { data } = await supabase
+  const { data } = await supabaseAdmin
     .from('articles')
-    .select('id, title, author, published_date, excerpt')
+    .select('*')
     .order('id', { ascending: false });
   return data || [];
 }

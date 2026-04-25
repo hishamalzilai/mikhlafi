@@ -1,10 +1,11 @@
-import { supabase } from '@/lib/supabase';
+import { supabaseAdmin } from '@/lib/supabase-admin';
 import VisionListClient from './VisionListClient';
 
 export const revalidate = 3600;
+export const dynamic = 'force-dynamic';
 
 async function getStudies() {
-  const { data } = await supabase
+  const { data } = await supabaseAdmin
     .from('studies')
     .select('*')
     .order('id', { ascending: false });

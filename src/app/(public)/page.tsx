@@ -2,7 +2,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowLeft, Shield, Newspaper, Play, Globe, Users, Scale, Archive, BookOpen, Quote, FileText } from 'lucide-react';
 import { getHomepageSettings } from '@/app/hq-management-system/home-actions';
-import { supabase } from '@/lib/supabase';
+import { supabaseAdmin } from '@/lib/supabase-admin';
 
 import TimelineCarousel from '@/components/TimelineCarousel';
 
@@ -13,14 +13,14 @@ export default async function Home() {
   const content = await getHomepageSettings();
   
   // Fetch latest 2 studies
-  const { data: latestStudies } = await supabase
+  const { data: latestStudies } = await supabaseAdmin
     .from('studies')
-    .select('id, title, category, published_date')
+    .select('*')
     .order('published_date', { ascending: false })
     .limit(2);
 
   // Fetch latest media: 1 Video and 1 Photo
-  const { data: latestVideo } = await supabase
+  const { data: latestVideo } = await supabaseAdmin
     .from('media_library')
     .select('*')
     .eq('type', 'video')
@@ -28,7 +28,7 @@ export default async function Home() {
     .limit(1)
     .single();
 
-  const { data: latestPhoto } = await supabase
+  const { data: latestPhoto } = await supabaseAdmin
     .from('media_library')
     .select('*')
     .eq('type', 'photo')
@@ -37,7 +37,7 @@ export default async function Home() {
     .single();
 
   // Fetch latest 3 news
-  const { data: latestNews } = await supabase
+  const { data: latestNews } = await supabaseAdmin
     .from('news')
     .select('*')
     .order('created_at', { ascending: false })
