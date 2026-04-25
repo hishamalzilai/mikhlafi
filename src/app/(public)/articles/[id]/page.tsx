@@ -2,17 +2,9 @@ import { supabase } from '@/lib/supabase';
 import { notFound } from 'next/navigation';
 import ArticleContent from './ArticleContent';
 
-// ISR: Revalidate every 60 seconds
+// Force dynamic rendering to ensure live data at runtime
+export const dynamic = 'force-dynamic';
 export const revalidate = 60;
-
-// Pre-generate all article pages at build time
-export async function generateStaticParams() {
-  const { data } = await supabase.from('articles').select('id');
-  
-  return (data || []).map((article) => ({
-    id: String(article.id),
-  }));
-}
 
 // Server-side data fetching
 async function getArticle(id: string) {

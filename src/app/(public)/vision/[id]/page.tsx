@@ -2,12 +2,8 @@ import { supabase } from '@/lib/supabase';
 import { notFound } from 'next/navigation';
 import VisionContent from './VisionContent';
 
+export const dynamic = 'force-dynamic';
 export const revalidate = 3600;
-
-export async function generateStaticParams() {
-  const { data } = await supabase.from('studies').select('id');
-  return (data || []).map((item) => ({ id: String(item.id) }));
-}
 
 async function getStudy(id: string) {
   const { data, error } = await supabase
