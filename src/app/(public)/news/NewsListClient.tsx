@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
-import Link from 'next/link';
+import Image from 'next/image';
 import { Newspaper, ChevronLeft } from 'lucide-react';
 
 interface NewsListClientProps {
@@ -33,8 +33,15 @@ export default function NewsListClient({ newsList }: NewsListClientProps) {
                
                <div className="relative z-10 flex flex-col h-full">
                   {news.image_url && (
-                      <div className="w-full h-48 sm:h-56 mb-6 rounded-2xl overflow-hidden border border-slate-100 shadow-sm relative group-hover:shadow-md transition-all">
-                         <img src={news.image_url} alt={news.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                      <div className="w-full relative h-48 sm:h-56 mb-6 rounded-2xl overflow-hidden border border-slate-100 shadow-sm group-hover:shadow-md transition-all">
+                         <Image 
+                           src={news.image_url} 
+                           alt={news.title} 
+                           fill
+                           sizes="(max-width: 768px) 100vw, 50vw"
+                           priority={index < 2}
+                           className="object-cover group-hover:scale-105 transition-transform duration-700" 
+                         />
                       </div>
                   )}
                   <span className="self-start text-[10px] md:text-xs font-black text-[#b18c39] px-4 py-1.5 bg-[#b18c39]/5 rounded-full uppercase tracking-widest border border-[#b18c39]/10 mb-6">

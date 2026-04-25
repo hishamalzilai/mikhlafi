@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
+import Image from 'next/image';
 import { Play, ChevronLeft, ChevronRight, Search, Clock, Film, X, Expand } from 'lucide-react';
 
 interface LibraryListClientProps {
@@ -66,7 +67,16 @@ export default function LibraryListClient({ mediaList }: LibraryListClientProps)
                className="relative cursor-pointer group break-inside-avoid animate-in fade-in overflow-hidden border border-slate-800 shadow-xl"
                style={{ animationFillMode: 'both', animationDelay: `${index * 100}ms` }}
              >
-               <img src={item.thumbnail_url} alt={item.title} className="w-full h-auto object-cover opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700" />
+               <div className="relative aspect-[4/3] w-full overflow-hidden">
+                  <Image 
+                    src={item.thumbnail_url} 
+                    alt={item.title} 
+                    fill
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    priority={index < 4}
+                    className="object-cover opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700" 
+                  />
+               </div>
                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/40 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-500"></div>
                
                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-500">
@@ -146,7 +156,15 @@ export default function LibraryListClient({ mediaList }: LibraryListClientProps)
                           ></iframe>
                        </div>
                     ) : (
-                       <img src={selectedPhoto.url} alt={selectedPhoto.title} className="max-w-full max-h-full object-contain drop-shadow-[0_0_50px_rgba(0,0,0,0.8)] rounded-xl block mx-auto border border-slate-800/80" />
+                       <div className="relative w-full h-full min-h-[50vh]">
+                          <Image 
+                            src={selectedPhoto.url} 
+                            alt={selectedPhoto.title} 
+                            fill
+                            priority
+                            className="object-contain drop-shadow-[0_0_50px_rgba(0,0,0,0.8)] rounded-xl" 
+                          />
+                       </div>
                     )
                  )}
               </div>
