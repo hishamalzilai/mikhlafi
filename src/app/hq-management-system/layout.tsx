@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import { Loader2, LayoutDashboard, Newspaper, FileText, BookOpen, Film, FolderArchive, LogOut, UserRound, Menu, X, Home } from 'lucide-react';
+import { Loader2, LayoutDashboard, Newspaper, FileText, BookOpen, Film, FolderArchive, LogOut, UserRound, Menu, X, Home, Quote } from 'lucide-react';
 import Link from 'next/link';
 import { checkAdminSession, logoutAdmin } from './actions';
 
@@ -57,6 +57,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { href: "/hq-management-system/home", label: "إدارة الرئيسية", icon: LayoutDashboard, color: "text-[#b18c39]" },
     { href: "/hq-management-system/bio", label: "السيرة والمحطات", icon: UserRound },
     { href: "/hq-management-system/news", label: "الأخبار والآراء", icon: Newspaper },
+    { href: "/hq-management-system/testimonials", label: "الشهادات والآراء", icon: Quote },
     { href: "/hq-management-system/articles", label: "المقالات", icon: FileText },
     { href: "/hq-management-system/vision", label: "الدراسات", icon: BookOpen },
     { href: "/hq-management-system/library", label: "المكتبة المرئية", icon: Film },
@@ -71,7 +72,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           {isSidebarOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
         <div className="flex items-center gap-2">
-          <img src="/logoedit.png" alt="Logo" className="h-8 invert mix-blend-screen opacity-80" />
+          <img src="/newsizelogo.png" alt="Logo" className="h-8 invert mix-blend-screen opacity-80" />
           <span className="font-black text-sm">لوحة الإدارة</span>
         </div>
         <div className="w-10"></div> {/* Spacer for symmetry */}
@@ -92,7 +93,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         ${isSidebarOpen ? 'translate-x-0' : 'translate-x-full lg:translate-x-0'}
       `}>
         <div className="p-6 border-b border-slate-800 hidden lg:flex flex-col items-center gap-4">
-          <img src="/logoedit.png" alt="Logo" className="w-20 object-contain invert mix-blend-screen opacity-70" />
+          <img src="/newsizelogo.png" alt="Logo" className="w-20 object-contain invert mix-blend-screen opacity-70" />
           <div className="text-white font-black text-lg text-center">
             لوحة تحكم الموقع
           </div>

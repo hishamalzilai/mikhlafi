@@ -2,6 +2,7 @@
 
 import { supabaseAdmin } from '@/lib/supabase-admin';
 import { revalidatePath } from 'next/cache';
+import { homepageSchema } from '@/lib/schemas';
 
 export type TimelineItem = {
   year: string;
@@ -42,13 +43,18 @@ export async function updateHomepageSettings(content: HomepageContent) {
     return { success: false, error: 'غير مصرح لك بإجراء هذا التعديل.' };
   }
 
-  const { error } = await supabaseAdmin
-    .from('site_settings')
-    .upsert({ id: 'homepage', content, updated_at: new Date().toISOString() });
+  try {
+    const validatedContent = homepageSchema.parse(content);
+    const { error } = await supabaseAdmin
+      .from('site_settings')
+      .upsert({ id: 'homepage', content: validatedContent, updated_at: new Date().toISOString() });
 
-  if (error) {
-    console.error("Error updating homepage settings:", error);
-    return { success: false, error: error.message };
+    if (error) {
+      console.error("Error updating homepage settings:", error);
+      return { success: false, error: error.message };
+    }
+  } catch (err: any) {
+    return { success: false, error: err.errors?.[0]?.message || err.message };
   }
 
   revalidatePath('/');

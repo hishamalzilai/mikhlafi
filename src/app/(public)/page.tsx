@@ -94,10 +94,44 @@ export default async function Home() {
           </div>
         </section>
 
-        {/* 2. سكشن المحطات الوطنية (Interactive Timeline) */}
+        {/* 2. سجل الرؤى والتصريحات (News & Statements) */}
+        <section className="space-y-10">
+           <div className="flex flex-col md:flex-row justify-between items-start md:items-end border-b-4 border-slate-200 pb-5 gap-4 md:gap-0">
+              <h3 className="text-2xl md:text-4xl font-black text-slate-900 flex items-center gap-3">
+                <Newspaper className="text-[#b18c39] w-10 h-10 shrink-0" />
+                أخبار وآراء
+              </h3>
+              <Link href="/news" className="text-xs font-black text-slate-500 hover:text-slate-900 transition-colors uppercase tracking-widest mt-2 md:mt-0">سجل التصريحات الكامل</Link>
+           </div>
+           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+             {latestNews?.map((news, i) => (
+               <div key={news.id} className="bg-white p-8 border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-300 border-t-4 border-t-transparent hover:border-t-[#b18c39] group flex flex-col h-full">
+                 <div className="text-[10px] font-black text-[#b18c39] mb-4 tracking-widest bg-[#b18c39]/5 inline-block px-3 py-1 rounded-none border border-[#b18c39]/10 self-start uppercase">
+                   {news.date || news.published_date || 'مستجدات'}
+                 </div>
+                 <h4 className="font-bold text-xl leading-snug mb-4 group-hover:text-[#b18c39] transition-colors line-clamp-2">
+                   {news.title}
+                 </h4>
+                 <p className="text-slate-500 font-medium text-sm leading-relaxed mb-6 line-clamp-3 flex-1">
+                   {news.excerpt}
+                 </p>
+                 <Link href={`/news/${news.id}`} className="text-xs font-black text-[#b18c39] flex items-center gap-2 hover:gap-4 transition-all mt-auto">
+                   التفاصيل <ArrowLeft size={14}/>
+                 </Link>
+               </div>
+             ))}
+             {(!latestNews || latestNews.length === 0) && (
+               <div className="col-span-full py-12 text-center border-2 border-dashed border-slate-200 rounded-3xl">
+                  <p className="text-slate-400 font-bold italic">جاري تحديث الأخبار...</p>
+               </div>
+             )}
+           </div>
+        </section>
+
+        {/* 3. سكشن المحطات الوطنية (Interactive Timeline) */}
         <section className="bg-slate-900 text-white p-10 md:p-16 relative overflow-hidden shadow-2xl mx-[-1rem] md:mx-[-2rem] lg:mx-[-4rem] xl:mx-0 xl:rounded-none">
            <div className="absolute -left-20 -bottom-20 w-[40rem] h-auto pointer-events-none grayscale invert mix-blend-screen opacity-[0.05] rotate-12">
-             <Image src="/logoedit.png" alt="" width={640} height={640} className="object-contain" />
+             <Image src="/newsizelogo.png" alt="" width={640} height={640} className="object-contain" />
            </div>
            <div className="relative z-10">
              <div className="text-center space-y-4 mb-16">
@@ -115,7 +149,7 @@ export default async function Home() {
            </div>
         </section>
 
-        {/* 3. سكشن الفكر السياسي والرؤية */}
+        {/* 4. سكشن الفكر السياسي والرؤية */}
         <section className="grid lg:grid-cols-2 gap-12 md:gap-24 items-center">
            <div className="order-2 lg:order-1 relative p-8 md:p-16 bg-slate-50 border-r-[12px] border-[#b18c39] shadow-inner ml-[-1rem] md:ml-[-2rem] lg:ml-0">
               <Quote className="text-slate-200 w-24 h-24 absolute top-4 left-4" />
@@ -155,7 +189,7 @@ export default async function Home() {
            </div>
         </section>
 
-        {/* 4. سكشن الإنتاج المرئي (المكتبة الرقمية) */}
+        {/* 5. سكشن الإنتاج المرئي (المكتبة الرقمية) */}
         <section className="bg-slate-950 p-10 md:p-16 border-t-8 border-[#b18c39] relative overflow-hidden mx-[-1rem] md:mx-[-2rem] lg:mx-0 lg:rounded-none shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
            <div className="absolute top-0 left-0 w-full h-full bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:40px_40px] opacity-[0.2] pointer-events-none"></div>
            <div className="relative z-10 flex flex-col items-center text-center space-y-6 mb-16">
@@ -206,7 +240,7 @@ export default async function Home() {
            </div>
         </section>
 
-        {/* 5. سكشن خزانة الوثائق (Featured Archive) */}
+        {/* 6. سكشن خزانة الوثائق (Featured Archive) */}
         <section className="border-t-8 border-[#b18c39] bg-white p-12 md:p-20 shadow-xl relative text-center overflow-hidden">
            <Archive className="text-slate-50 w-[30rem] h-[30rem] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-80 rotate-12" />
            <div className="relative z-10 flex flex-col items-center max-w-3xl mx-auto space-y-8">
@@ -218,40 +252,6 @@ export default async function Home() {
               <Link href="/archive" className="bg-slate-900 text-white px-12 py-5 rounded-none font-black text-sm hover:bg-[#b18c39] transition-all flex items-center gap-4 shadow-xl uppercase tracking-widest mt-6">
                  الولوج إلى الخزانة <ArrowLeft size={20} />
               </Link>
-           </div>
-        </section>
-
-        {/* 6. سجل الرؤى والتصريحات (News & Statements) */}
-        <section className="space-y-10">
-           <div className="flex flex-col md:flex-row justify-between items-start md:items-end border-b-4 border-slate-200 pb-5 gap-4 md:gap-0">
-              <h3 className="text-2xl md:text-4xl font-black text-slate-900 flex items-center gap-3">
-                <Newspaper className="text-[#b18c39] w-10 h-10 shrink-0" />
-                أخبار وآراء
-              </h3>
-              <Link href="/news" className="text-xs font-black text-slate-500 hover:text-slate-900 transition-colors uppercase tracking-widest mt-2 md:mt-0">سجل التصريحات الكامل</Link>
-           </div>
-           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-             {latestNews?.map((news, i) => (
-               <div key={news.id} className="bg-white p-8 border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-300 border-t-4 border-t-transparent hover:border-t-[#b18c39] group flex flex-col h-full">
-                 <div className="text-[10px] font-black text-[#b18c39] mb-4 tracking-widest bg-[#b18c39]/5 inline-block px-3 py-1 rounded-none border border-[#b18c39]/10 self-start uppercase">
-                   {news.date || news.published_date || 'مستجدات'}
-                 </div>
-                 <h4 className="font-bold text-xl leading-snug mb-4 group-hover:text-[#b18c39] transition-colors line-clamp-2">
-                   {news.title}
-                 </h4>
-                 <p className="text-slate-500 font-medium text-sm leading-relaxed mb-6 line-clamp-3 flex-1">
-                   {news.excerpt}
-                 </p>
-                 <Link href={`/news/${news.id}`} className="text-xs font-black text-[#b18c39] flex items-center gap-2 hover:gap-4 transition-all mt-auto">
-                   التفاصيل <ArrowLeft size={14}/>
-                 </Link>
-               </div>
-             ))}
-             {(!latestNews || latestNews.length === 0) && (
-               <div className="col-span-full py-12 text-center border-2 border-dashed border-slate-200 rounded-3xl">
-                  <p className="text-slate-400 font-bold italic">جاري تحديث الأخبار...</p>
-               </div>
-             )}
            </div>
         </section>
       </div>

@@ -18,7 +18,7 @@ export async function generateStaticParams() {
 async function getArticle(id: string) {
   const { data, error } = await supabase
     .from('articles')
-    .select('*')
+    .select('id, title, author, date, published_date, content, excerpt')
     .eq('id', id)
     .single();
 

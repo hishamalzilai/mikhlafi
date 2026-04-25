@@ -12,7 +12,7 @@ export async function generateStaticParams() {
 async function getNewsItem(id: string) {
   const { data, error } = await supabase
     .from('news')
-    .select('*')
+    .select('id, title, content, author, published_date, image_url')
     .eq('id', id)
     .single();
   if (error || !data) return null;

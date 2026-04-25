@@ -44,7 +44,7 @@ export default function ArchiveListClient({ archiveList }: ArchiveListClientProp
   return (
     <>
        {/* Filter Navigation */}
-       <div className="flex flex-wrap items-center justify-center gap-4 mb-16">
+       <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 mb-16">
           {[
             { id: 'all', label: 'الكل' },
             { id: 'photo', label: 'صور تاريخية' },
@@ -55,7 +55,7 @@ export default function ArchiveListClient({ archiveList }: ArchiveListClientProp
              <button
                key={filter.id}
                onClick={() => { setActiveFilter(filter.id as any); setCurrentPage(1); }}
-               className={`px-8 py-3 rounded-full text-sm md:text-base font-black transition-all duration-300 border shadow-sm ${
+               className={`px-6 md:px-8 py-2 md:py-3 rounded-full text-sm md:text-base font-black transition-all duration-300 border shadow-sm ${
                  activeFilter === filter.id 
                  ? 'bg-[#b18c39] text-white border-[#b18c39] shadow-lg shadow-[#b18c39]/30 scale-105' 
                  : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50 hover:border-slate-300'
@@ -127,12 +127,12 @@ export default function ArchiveListClient({ archiveList }: ArchiveListClientProp
        {/* Pagination UI */}
        {totalPages > 1 && (
           <div className="mt-16 flex items-center justify-center gap-4">
-             <button onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))} disabled={currentPage === 1} className="w-12 h-12 rounded-full flex items-center justify-center border border-slate-200 bg-white text-slate-500 hover:bg-slate-50 hover:text-[#b18c39] disabled:opacity-50 disabled:pointer-events-none transition-all shadow-sm">
-               <ChevronLeft className="w-5 h-5 rotate-180" />
+             <button onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))} disabled={currentPage === 1} className="w-12 h-12 rounded-full flex items-center justify-center border border-slate-200 bg-white text-slate-500 hover:bg-slate-50 hover:text-[#b18c39] disabled:opacity-50 disabled:pointer-events-none transition-all shadow-sm text-center">
+               <ChevronLeft className="w-5 h-5 rotate-180 inline" />
              </button>
              <span className="text-slate-500 font-bold text-lg">صفحة {currentPage} من {totalPages}</span>
-             <button onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))} disabled={currentPage === totalPages} className="w-12 h-12 rounded-full flex items-center justify-center border border-slate-200 bg-white text-slate-500 hover:bg-slate-50 hover:text-[#b18c39] disabled:opacity-50 disabled:pointer-events-none transition-all shadow-sm">
-               <ChevronLeft className="w-5 h-5" />
+             <button onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))} disabled={currentPage === totalPages} className="w-12 h-12 rounded-full flex items-center justify-center border border-slate-200 bg-white text-slate-500 hover:bg-slate-50 hover:text-[#b18c39] disabled:opacity-50 disabled:pointer-events-none transition-all shadow-sm text-center">
+               <ChevronLeft className="w-5 h-5 inline" />
              </button>
           </div>
        )}
@@ -147,3 +147,4 @@ export default function ArchiveListClient({ archiveList }: ArchiveListClientProp
     </>
   );
 }
+

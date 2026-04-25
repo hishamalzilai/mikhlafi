@@ -38,7 +38,7 @@ export default function LoginPage() {
 
       <div className="max-w-md w-full bg-slate-900 rounded-3xl p-8 sm:p-10 shadow-[0_0_50px_rgba(0,0,0,0.5)] border border-slate-800 relative z-10">
         <div className="text-center mb-10">
-          <img src="/logoedit.png" alt="Logo" className="h-20 mx-auto mb-6 object-contain invert mix-blend-screen opacity-70" />
+          <img src="/newsizelogo.png" alt="Logo" className="h-20 mx-auto mb-6 object-contain invert mix-blend-screen opacity-70" />
           <h1 className="text-2xl font-black text-white mb-2 tracking-tight">تسجيل الدخول</h1>
           <p className="text-slate-400 font-medium">المنصة الإدارية للموقع الرسمي</p>
         </div>

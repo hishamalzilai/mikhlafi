@@ -3,7 +3,7 @@ import './globals.css';
 
 export const metadata: Metadata = {
   title: 'الموقع الرسمي | عبدالملك المخلافي',
-  description: 'البوابة الرقمية الشاملة والأرشيف التاريخي للمفكر والسياسي اليمني عبدالملك المخلافي.',
+  description: 'الموقع الرقمي الشامل والأرشيف التاريخي للمفكر والسياسي اليمني عبدالملك المخلافي.',
   icons: {
     icon: '/icon.png',
     apple: '/apple-icon.png',

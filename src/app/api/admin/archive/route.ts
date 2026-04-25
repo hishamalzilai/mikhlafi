@@ -1,7 +1,12 @@
 import { supabaseAdmin } from '@/lib/supabase-admin';
 import { NextRequest, NextResponse } from 'next/server';
+import { checkAdminSession } from '@/app/hq-management-system/actions';
+import { archiveSchema } from '@/lib/schemas';
 
 export async function GET() {
+  const isAdmin = await checkAdminSession();
+  if (!isAdmin) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
   const { data, error } = await supabaseAdmin
     .from('archive')
     .select('*')
@@ -11,21 +16,40 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
-  const body = await req.json();
-  const { data, error } = await supabaseAdmin.from('archive').insert([body]).select();
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  return NextResponse.json(data);
+  const isAdmin = await checkAdminSession();
+  if (!isAdmin) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+  try {
+    const rawBody = await req.json();
+    const validatedBody = archiveSchema.parse(rawBody);
+    const { data, error } = await supabaseAdmin.from('archive').insert([validatedBody]).select();
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json(data);
+  } catch (err: any) {
+    return NextResponse.json({ error: err.errors || err.message }, { status: 400 });
+  }
 }
 
 export async function PUT(req: NextRequest) {
-  const body = await req.json();
-  const { id, ...fields } = body;
-  const { data, error } = await supabaseAdmin.from('archive').update(fields).eq('id', id).select();
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  return NextResponse.json(data);
+  const isAdmin = await checkAdminSession();
+  if (!isAdmin) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+  try {
+    const rawBody = await req.json();
+    const { id, ...rest } = rawBody;
+    const validatedBody = archiveSchema.parse(rest);
+    const { data, error } = await supabaseAdmin.from('archive').update(validatedBody).eq('id', id).select();
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json(data);
+  } catch (err: any) {
+    return NextResponse.json({ error: err.errors || err.message }, { status: 400 });
+  }
 }
 
 export async function DELETE(req: NextRequest) {
+  const isAdmin = await checkAdminSession();
+  if (!isAdmin) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
   const { id } = await req.json();
   const { error } = await supabaseAdmin.from('archive').delete().eq('id', id);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
