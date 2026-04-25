@@ -52,48 +52,66 @@ export default function LibraryManagement() {
     }
   };
 
-  const handleFileUpload = async (file: File) => {
-    try {
-      let fileToUpload = file;
-      setUploadProgress({ progress: 0, status: 'جاري التحضير...' });
+  const handleFileUpload = async (files: FileList | File[]) => {
+    const fileArray = Array.from(files);
+    if (fileArray.length === 0) return;
 
-      // Compress Images
-      if (file.type.startsWith('image/')) {
-        setUploadProgress({ progress: 10, status: 'جاري ضغط الصورة...' });
-        const options = {
-          maxSizeMB: 1,
-          maxWidthOrHeight: 1920,
-          useWebWorker: true
-        };
-        fileToUpload = await imageCompression(file, options);
+    setSaving(true);
+    const uploadedItems: any[] = [];
+    
+    try {
+      for (let i = 0; i < fileArray.length; i++) {
+        const file = fileArray[i];
+        const statusPrefix = fileArray.length > 1 ? `(${i + 1}/${fileArray.length}) ` : '';
+        
+        setUploadProgress({ progress: 10, status: `${statusPrefix}جاري التحضير...` });
+
+        let fileToUpload = file;
+        if (file.type.startsWith('image/')) {
+          setUploadProgress({ progress: 20, status: `${statusPrefix}جاري ضغط الصورة...` });
+          const options = { maxSizeMB: 1, maxWidthOrHeight: 1920, useWebWorker: true };
+          fileToUpload = await imageCompression(file, options);
+        }
+
+        setUploadProgress({ progress: 40, status: `${statusPrefix}جاري الرفع...` });
+        
+        const { uploadMediaAction } = await import('../upload-actions');
+        const formData = new FormData();
+        formData.append('file', fileToUpload);
+        formData.append('path', 'library');
+        formData.append('bucket', 'media');
+
+        const result = await uploadMediaAction(formData);
+        if (!result.success || !result.url) throw new Error(result.error || "خطأ في الرفع");
+
+        setUploadProgress({ progress: 90, status: `${statusPrefix}اكتمل رفع الملف` });
+        
+        uploadedItems.push({
+          title: file.name.split('.')[0], // Default title from filename
+          description: '',
+          type: file.type.startsWith('image/') ? 'photo' : 'video',
+          thumbnail_url: result.url,
+          duration: null
+        });
       }
 
-      setUploadProgress({ progress: 30, status: 'جاري رفع الملف إلى الخادم...' });
+      setUploadProgress({ progress: 100, status: 'جاري حفظ المعلومات في قاعدة البيانات...' });
       
-      const { uploadMediaAction } = await import('../upload-actions');
-      const formData = new FormData();
-      formData.append('file', fileToUpload);
-      formData.append('path', 'library');
-      formData.append('bucket', 'media');
-
-      const result = await uploadMediaAction(formData);
-
-      if (!result.success || !result.url) throw new Error(result.error || "خطأ في استلام رابط الملف");
+      const { bulkSaveLibraryItemsAction } = await import('../library-actions');
+      const saveResult = await bulkSaveLibraryItemsAction(uploadedItems);
       
-      setUploadProgress({ progress: 80, status: 'إنهاء الرفع...' });
+      if (!saveResult.success) throw new Error(saveResult.error);
 
-      const publicUrl = result.url;
-      
-      setThumbnail(publicUrl);
-      setPreviewUrl(publicUrl);
-      setUploadProgress({ progress: 100, status: 'اكتمل الرفع!' });
-      
-      setTimeout(() => setUploadProgress(null), 2000);
-
+      setSuccessMsg(`تم إضافة ${uploadedItems.length} مادة بنجاح!`);
+      setTimeout(() => setSuccessMsg(''), 3000);
+      fetchItems();
+      resetForm();
     } catch (err: any) {
       console.error(err);
-      setUploadProgress({ progress: 0, status: `خطأ: ${err.message}` });
-      setTimeout(() => setUploadProgress(null), 5000);
+      alert(`حدث خطأ أثناء الرفع الجماعي: ${err.message}`);
+    } finally {
+      setSaving(false);
+      setUploadProgress(null);
     }
   };
 
@@ -168,8 +186,8 @@ export default function LibraryManagement() {
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      handleFileUpload(e.dataTransfer.files[0]);
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      handleFileUpload(e.dataTransfer.files);
     }
   };
 
@@ -262,7 +280,7 @@ export default function LibraryManagement() {
                       onClick={() => fileInputRef.current?.click()}
                       className={`relative overflow-hidden w-full h-64 border-2 border-dashed rounded-3xl flex flex-col items-center justify-center transition-all cursor-pointer group ${isDragging ? 'border-[#b18c39] bg-[#b18c39]/5 scale-[1.02]' : previewUrl ? 'border-[#b18c39]/30 bg-[#b18c39]/5' : 'border-slate-300 bg-slate-50 hover:border-[#b18c39]/50 hover:bg-slate-100'}`}
                    >
-                     <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={(e) => { if(e.target.files && e.target.files[0]) handleFileUpload(e.target.files[0]) }} />
+                     <input type="file" ref={fileInputRef} className="hidden" accept="image/*,video/*" multiple onChange={(e) => { if(e.target.files && e.target.files.length > 0) handleFileUpload(e.target.files) }} />
                      
                      {previewUrl ? (
                         <>

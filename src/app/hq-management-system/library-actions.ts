@@ -71,3 +71,23 @@ export async function deleteLibraryItemAction(id: number) {
     return { success: false, error: err.message };
   }
 }
+
+export async function bulkSaveLibraryItemsAction(items: any[]) {
+  const isAdmin = await checkAdminSession();
+  if (!isAdmin) return { success: false, error: 'Unauthorized' };
+
+  try {
+    const { data, error } = await supabaseAdmin
+      .from('media_library')
+      .insert(items);
+
+    if (error) throw error;
+
+    revalidatePath('/library');
+    revalidatePath('/hq-management-system/library');
+    return { success: true, count: items.length };
+  } catch (err: any) {
+    console.error("[LibraryAction] bulk save error:", err);
+    return { success: false, error: err.message };
+  }
+}
