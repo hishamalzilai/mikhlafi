@@ -1,13 +1,9 @@
 "use server";
 
-import { createClient } from '@supabase/supabase-js';
 import { revalidatePath } from 'next/cache';
 import { checkAdminSession } from './actions';
 import { testimonialSchema } from '@/lib/schemas';
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
-const supabase = createClient(supabaseUrl, supabaseKey);
+import { supabaseAdmin as supabase } from '@/lib/supabase-admin';
 
 export async function getTestimonials() {
   const { data, error } = await supabase
