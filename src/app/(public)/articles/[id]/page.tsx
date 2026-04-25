@@ -1,16 +1,16 @@
-import { supabase } from '@/lib/supabase';
+import { supabaseAdmin } from '@/lib/supabase-admin';
 import { notFound } from 'next/navigation';
 import ArticleContent from './ArticleContent';
 
 // Force dynamic rendering to ensure live data at runtime
 export const dynamic = 'force-dynamic';
-export const revalidate = 60;
+export const revalidate = 3600;
 
 // Server-side data fetching
 async function getArticle(id: string) {
-  const { data, error } = await supabase
+  const { data, error } = await supabaseAdmin
     .from('articles')
-    .select('id, title, author, date, published_date, content, excerpt')
+    .select('*')
     .eq('id', id)
     .single();
 
