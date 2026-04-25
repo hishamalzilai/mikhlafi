@@ -54,61 +54,26 @@ export default function AdminNewsPage() {
     setSaving(true);
     
     try {
-      let image_url = '';
-      
-      // Upload image to 'media' bucket if a file is selected
+      const formData = new FormData();
+      if (editId) formData.append('id', String(editId));
+      formData.append('title', title);
+      formData.append('excerpt', excerpt);
+      formData.append('content', content);
+      formData.append('published_date', publishedDate);
       if (imageFile) {
-        const fileExt = imageFile.name.split('.').pop();
-        const fileName = `${Math.random()}.${fileExt}`;
-        const filePath = `news/${fileName}`;
-        
-        const { error: uploadError } = await supabase.storage
-          .from('media')
-          .upload(filePath, imageFile, { upsert: true });
-          
-        if (uploadError) throw uploadError;
-        
-        const { data: publicUrlData } = supabase.storage
-          .from('media')
-          .getPublicUrl(filePath);
-          
-        image_url = publicUrlData.publicUrl;
+        formData.append('image', imageFile);
       }
 
-      const newEntity: any = {
-        title,
-        excerpt,
-        content,
-        published_date: publishedDate || new Date().toISOString().split('T')[0],
-      };
-      if (image_url) {
-         newEntity.image_url = image_url;
-      }
-
-      if (editId) {
-         const res = await fetch('/api/admin/news', {
-           method: 'PUT',
-           headers: { 'Content-Type': 'application/json' },
-           body: JSON.stringify({ id: editId, ...newEntity }),
-         });
-         const json = await res.json();
-         if (json.error) throw new Error(json.error);
-         setSuccessMsg('تم تعديل الخبر بنجاح!');
-      } else {
-         const res = await fetch('/api/admin/news', {
-           method: 'POST',
-           headers: { 'Content-Type': 'application/json' },
-           body: JSON.stringify(newEntity),
-         });
-         const json = await res.json();
-         if (json.error) throw new Error(json.error);
-         setSuccessMsg('تمت إضافة الخبر بنجاح!');
-      }
+      const { saveNewsAction } = await import('../news-actions');
+      const result = await saveNewsAction(formData);
       
+      if (!result.success) {
+        throw new Error(result.error);
+      }
+
+      setSuccessMsg(editId ? 'تم تعديل الخبر بنجاح!' : 'تمت إضافة الخبر بنجاح!');
       resetForm();
-      
       fetchNews();
-      
       setTimeout(() => setSuccessMsg(''), 3000);
       
     } catch (error: any) {
@@ -121,13 +86,9 @@ export default function AdminNewsPage() {
   const handleDelete = async (id: number) => {
     if(!confirm("هل أنت متأكد من حذف هذا الخبر نهائياً؟")) return;
     try {
-      const res = await fetch('/api/admin/news', {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id }),
-      });
-      const json = await res.json();
-      if (json.error) throw new Error(json.error);
+      const { deleteNewsAction } = await import('../news-actions');
+      const result = await deleteNewsAction(id);
+      if (!result.success) throw new Error(result.error);
       fetchNews();
     } catch (e: any) {
       alert("خطأ في الحذف: " + e.message);
