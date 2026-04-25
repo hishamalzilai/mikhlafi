@@ -29,6 +29,8 @@ export default function AdminNewsPage() {
       const result = await getNewsAction();
       if (result.success && result.data) {
         setNews(result.data);
+      } else if (result.error === 'Unauthorized') {
+        window.location.href = '/hq-management-system/login';
       } else {
         console.error(result.error);
       }

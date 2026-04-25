@@ -29,6 +29,8 @@ export default function AdminArticlesPage() {
       const result = await getArticlesAction();
       if (result.success && result.data) {
         setArticles(result.data);
+      } else if (result.error === 'Unauthorized') {
+        window.location.href = '/hq-management-system/login';
       } else {
         console.error(result.error);
       }
