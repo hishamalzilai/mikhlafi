@@ -81,13 +81,18 @@ export default function LibraryListClient({ mediaList }: LibraryListClientProps)
                   </span>
                </div>
                
-               <div className="absolute bottom-0 left-0 right-0 p-5 translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
-                  <h3 className="text-white font-black text-lg md:text-xl leading-snug drop-shadow-md mb-2">{item.title}</h3>
+               <div className="absolute bottom-0 left-0 right-0 p-5 z-20">
+                  <h3 className="text-white font-black text-lg md:text-xl leading-snug drop-shadow-lg mb-2 line-clamp-2">
+                     {item.title || item.thumbnail_url?.split('/').pop()?.split('_').pop()?.split('.')[0] || (item.type === 'video' ? 'فيديو جديد' : 'صورة جديدة')}
+                  </h3>
                   <div className="flex items-center gap-4 text-slate-300 text-xs font-bold">
                      {item.type === 'video' && item.duration && (
-                        <span className="flex items-center gap-1.5 bg-black/40 px-2 py-1 rounded-md backdrop-blur-sm"><Clock className="w-3.5 h-3.5 text-[#b18c39]" />{item.duration}</span>
+                        <span className="flex items-center gap-1.5 bg-black/40 px-2.5 py-1 rounded-md backdrop-blur-sm border border-white/10">
+                           <Clock className="w-3.5 h-3.5 text-[#b18c39]" />
+                           {item.duration}
+                        </span>
                      )}
-                     {item.description && <span className="line-clamp-1">{item.description}</span>}
+                     {item.description && <span className="line-clamp-1 opacity-80">{item.description}</span>}
                   </div>
                </div>
              </div>
