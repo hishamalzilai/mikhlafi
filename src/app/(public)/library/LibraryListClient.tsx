@@ -131,8 +131,25 @@ export default function LibraryListClient({ mediaList }: LibraryListClientProps)
              </button>
              
              <div className="relative w-full h-full max-h-[75vh] max-w-7xl flex items-center justify-center z-[99999] animate-in zoom-in-95 duration-500 mb-8">
-                {selectedPhoto?.url && <img src={selectedPhoto.url} alt={selectedPhoto.title} className="max-w-full max-h-full object-contain drop-shadow-[0_0_50px_rgba(0,0,0,0.8)] rounded-xl block mx-auto border border-slate-800/80" />}
-             </div>
+                 {selectedPhoto?.url && (
+                    selectedPhoto.url.includes('youtube.com') || selectedPhoto.url.includes('youtu.be') ? (
+                       <div className="w-full aspect-video max-h-full rounded-2xl overflow-hidden shadow-2xl border border-white/10">
+                          <iframe 
+                            src={`https://www.youtube.com/embed/${
+                               selectedPhoto.url.includes('v=') 
+                               ? selectedPhoto.url.split('v=')[1].split('&')[0] 
+                               : selectedPhoto.url.split('youtu.be/')[1].split('?')[0]
+                            }?autoplay=1`}
+                            className="w-full h-full border-0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                          ></iframe>
+                       </div>
+                    ) : (
+                       <img src={selectedPhoto.url} alt={selectedPhoto.title} className="max-w-full max-h-full object-contain drop-shadow-[0_0_50px_rgba(0,0,0,0.8)] rounded-xl block mx-auto border border-slate-800/80" />
+                    )
+                 )}
+              </div>
              
              {/* Info overlay below the image */}
              <div className="max-w-4xl w-full text-center animate-in slide-in-from-bottom-8 duration-700 z-[99999]">
