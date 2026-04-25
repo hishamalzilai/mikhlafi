@@ -58,35 +58,21 @@ export default function AdminStudiesPage() {
     setSaving(true);
     
     try {
-      const newEntity: any = {
-        title,
-        excerpt,
-        content,
-        author,
-        category,
-        published_date: publishedDate || new Date().toISOString().split('T')[0],
-      };
+      const formData = new FormData();
+      if (editId) formData.append('id', String(editId));
+      formData.append('title', title);
+      formData.append('excerpt', excerpt);
+      formData.append('content', content);
+      formData.append('author', author);
+      formData.append('category', category);
+      formData.append('published_date', publishedDate);
 
-      if (editId) {
-         const res = await fetch('/api/admin/studies', {
-           method: 'PUT',
-           headers: { 'Content-Type': 'application/json' },
-           body: JSON.stringify({ id: editId, ...newEntity }),
-         });
-         const json = await res.json();
-         if (json.error) throw new Error(json.error);
-         setSuccessMsg('تم تعديل الدراسة بنجاح!');
-      } else {
-         const res = await fetch('/api/admin/studies', {
-           method: 'POST',
-           headers: { 'Content-Type': 'application/json' },
-           body: JSON.stringify(newEntity),
-         });
-         const json = await res.json();
-         if (json.error) throw new Error(json.error);
-         setSuccessMsg('تمت إضافة الدراسة بنجاح!');
-      }
+      const { saveStudyAction } = await import('../vision-actions');
+      const result = await saveStudyAction(formData);
       
+      if (!result.success) throw new Error(result.error);
+
+      setSuccessMsg(editId ? 'تم تعديل الدراسة بنجاح!' : 'تمت إضافة الدراسة بنجاح!');
       resetForm();
       fetchStudies();
       setTimeout(() => setSuccessMsg(''), 3000);
@@ -101,13 +87,9 @@ export default function AdminStudiesPage() {
   const handleDelete = async (id: number) => {
     if(!confirm("هل أنت متأكد من حذف هذه الدراسة نهائياً؟")) return;
     try {
-      const res = await fetch('/api/admin/studies', {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id }),
-      });
-      const json = await res.json();
-      if (json.error) throw new Error(json.error);
+      const { deleteStudyAction } = await import('../vision-actions');
+      const result = await deleteStudyAction(id);
+      if (!result.success) throw new Error(result.error);
       fetchStudies();
     } catch (e: any) {
       alert("خطأ في الحذف: " + e.message);

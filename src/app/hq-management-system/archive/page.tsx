@@ -113,31 +113,21 @@ export default function AdminArchivePage() {
     e.preventDefault();
     setSaving(true);
     try {
-      const newEntity: any = {
-        title, description, type,
-        published_date: publishedDate || new Date().toISOString().split('T')[0],
-        file_url: fileUrl || null,
-        cover_url: coverUrl || null,
-      };
-      if (editId) {
-        const res = await fetch('/api/admin/archive', {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ id: editId, ...newEntity }),
-        });
-        const json = await res.json();
-        if (json.error) throw new Error(json.error);
-        setSuccessMsg('تم تعديل المادة الأرشيفية بنجاح!');
-      } else {
-        const res = await fetch('/api/admin/archive', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(newEntity),
-        });
-        const json = await res.json();
-        if (json.error) throw new Error(json.error);
-        setSuccessMsg('تمت إضافة المادة الأرشيفية بنجاح!');
-      }
+      const formData = new FormData();
+      if (editId) formData.append('id', String(editId));
+      formData.append('title', title);
+      formData.append('description', description);
+      formData.append('type', type);
+      formData.append('published_date', publishedDate);
+      formData.append('file_url', fileUrl);
+      formData.append('cover_url', coverUrl);
+
+      const { saveArchiveItemAction } = await import('../archive-actions');
+      const result = await saveArchiveItemAction(formData);
+      
+      if (!result.success) throw new Error(result.error);
+      
+      setSuccessMsg('تم حفظ المادة الأرشيفية بنجاح!');
       resetForm(); fetchItems();
       setTimeout(() => setSuccessMsg(''), 3000);
     } catch (error: any) {
@@ -148,13 +138,9 @@ export default function AdminArchivePage() {
   const handleDelete = async (id: number) => {
     if (!confirm("هل أنت متأكد من حذف هذه المادة الأرشيفية نهائياً؟")) return;
     try {
-      const res = await fetch('/api/admin/archive', {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id }),
-      });
-      const json = await res.json();
-      if (json.error) throw new Error(json.error);
+      const { deleteArchiveItemAction } = await import('../archive-actions');
+      const result = await deleteArchiveItemAction(id);
+      if (!result.success) throw new Error(result.error);
       fetchItems();
     } catch (e: any) {
       alert("خطأ في الحذف: " + e.message);

@@ -54,34 +54,20 @@ export default function AdminArticlesPage() {
     setSaving(true);
     
     try {
-      const newEntity: any = {
-        title,
-        excerpt,
-        content,
-        author,
-        published_date: publishedDate || new Date().toISOString().split('T')[0],
-      };
+      const formData = new FormData();
+      if (editId) formData.append('id', String(editId));
+      formData.append('title', title);
+      formData.append('excerpt', excerpt);
+      formData.append('content', content);
+      formData.append('author', author);
+      formData.append('published_date', publishedDate);
 
-      if (editId) {
-         const res = await fetch('/api/admin/articles', {
-           method: 'PUT',
-           headers: { 'Content-Type': 'application/json' },
-           body: JSON.stringify({ id: editId, ...newEntity }),
-         });
-         const json = await res.json();
-         if (json.error) throw new Error(json.error);
-         setSuccessMsg('تم تعديل المقال بنجاح!');
-      } else {
-         const res = await fetch('/api/admin/articles', {
-           method: 'POST',
-           headers: { 'Content-Type': 'application/json' },
-           body: JSON.stringify(newEntity),
-         });
-         const json = await res.json();
-         if (json.error) throw new Error(json.error);
-         setSuccessMsg('تمت إضافة المقال بنجاح!');
-      }
+      const { saveArticleAction } = await import('../articles-actions');
+      const result = await saveArticleAction(formData);
       
+      if (!result.success) throw new Error(result.error);
+
+      setSuccessMsg(editId ? 'تم تعديل المقال بنجاح!' : 'تمت إضافة المقال بنجاح!');
       resetForm();
       fetchArticles();
       setTimeout(() => setSuccessMsg(''), 3000);
@@ -96,13 +82,9 @@ export default function AdminArticlesPage() {
   const handleDelete = async (id: number) => {
     if(!confirm("هل أنت متأكد من حذف هذا المقال نهائياً؟")) return;
     try {
-      const res = await fetch('/api/admin/articles', {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id }),
-      });
-      const json = await res.json();
-      if (json.error) throw new Error(json.error);
+      const { deleteArticleAction } = await import('../articles-actions');
+      const result = await deleteArticleAction(id);
+      if (!result.success) throw new Error(result.error);
       fetchArticles();
     } catch (e: any) {
       alert("خطأ في الحذف: " + e.message);

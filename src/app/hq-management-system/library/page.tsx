@@ -105,46 +105,29 @@ export default function LibraryManagement() {
     e.preventDefault();
     setSaving(true);
 
-    const payload = {
-      title,
-      description,
-      type,
-      thumbnail_url: thumbnail,
-      duration: type === 'video' ? duration : null,
-    };
-
-    let error;
     try {
-      if (editId) {
-        const res = await fetch('/api/admin/media-library', {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ id: editId, ...payload }),
-        });
-        const json = await res.json();
-        if (json.error) throw new Error(json.error);
-      } else {
-        const res = await fetch('/api/admin/media-library', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload),
-        });
-        const json = await res.json();
-        if (json.error) throw new Error(json.error);
-      }
-    } catch (err: any) {
-      error = err;
-    }
+      const formData = new FormData();
+      if (editId) formData.append('id', String(editId));
+      formData.append('title', title);
+      formData.append('description', description);
+      formData.append('type', type);
+      formData.append('thumbnail_url', thumbnail);
+      formData.append('duration', duration);
 
-    if (error) {
-      alert(`حدث خطأ: ${error.message}`);
-    } else {
+      const { saveLibraryItemAction } = await import('../library-actions');
+      const result = await saveLibraryItemAction(formData);
+      
+      if (!result.success) throw new Error(result.error);
+
       setSuccessMsg(editId ? 'تم تحديث المادة بنجاح!' : 'تم إضافة المادة بنجاح!');
       setTimeout(() => setSuccessMsg(''), 3000);
       resetForm();
       fetchItems();
+    } catch (err: any) {
+      alert(`حدث خطأ: ${err.message}`);
+    } finally {
+      setSaving(false);
     }
-    setSaving(false);
   };
 
   const handleEdit = (item: any) => {
@@ -162,13 +145,9 @@ export default function LibraryManagement() {
   const handleDelete = async (id: number) => {
     if (confirm('هل أنت متأكد من حذف هذه المادة؟')) {
       try {
-        const res = await fetch('/api/admin/media-library', {
-          method: 'DELETE',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ id }),
-        });
-        const json = await res.json();
-        if (json.error) throw new Error(json.error);
+        const { deleteLibraryItemAction } = await import('../library-actions');
+        const result = await deleteLibraryItemAction(id);
+        if (!result.success) throw new Error(result.error);
         setItems(items.filter(i => i.id !== id));
       } catch (e: any) {
         alert('خطأ أثناء الحذف: ' + e.message);
