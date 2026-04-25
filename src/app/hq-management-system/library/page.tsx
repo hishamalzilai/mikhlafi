@@ -78,7 +78,7 @@ export default function LibraryManagement() {
 
       const result = await uploadMediaAction(formData);
 
-      if (!result.success) throw new Error(result.error);
+      if (!result.success || !result.url) throw new Error(result.error || "خطأ في استلام رابط الملف");
       
       setUploadProgress({ progress: 80, status: 'إنهاء الرفع...' });
 

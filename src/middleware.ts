@@ -35,9 +35,9 @@ export function middleware(request: NextRequest) {
         script-src 'self' 'unsafe-eval' 'unsafe-inline' https://www.google-analytics.com;
         style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
         font-src 'self' https://fonts.gstatic.com;
-        img-src 'self' data: https://*.supabase.co https://images.unsplash.com;
-        connect-src 'self' https://*.supabase.co https://www.google-analytics.com;
-        frame-src 'self' https://pucmkgbvxrvswwkyitzo.supabase.co https://www.youtube.com;
+        img-src 'self' data: https://*.supabase.co https://sup.hazlinkdata.cloud https://images.unsplash.com;
+        connect-src 'self' https://*.supabase.co https://sup.hazlinkdata.cloud https://www.google-analytics.com;
+        frame-src 'self' https://*.supabase.co https://sup.hazlinkdata.cloud https://www.youtube.com;
         object-src 'none';
         base-uri 'self';
         form-action 'self';
