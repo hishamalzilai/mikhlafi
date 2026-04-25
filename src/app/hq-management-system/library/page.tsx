@@ -70,20 +70,19 @@ export default function LibraryManagement() {
 
       setUploadProgress({ progress: 30, status: 'جاري رفع الملف إلى الخادم...' });
       
-      const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.webp`;
-      const bucket = 'archive-media';
-      
-      const { data, error } = await supabase.storage
-        .from(bucket)
-        .upload(`library/${fileName}`, fileToUpload, {
-          cacheControl: '3600',
-          upsert: false
-        });
+      const { uploadMediaAction } = await import('../upload-actions');
+      const formData = new FormData();
+      formData.append('file', fileToUpload);
+      formData.append('path', 'library');
+      formData.append('bucket', 'media');
 
-      if (error) throw error;
+      const result = await uploadMediaAction(formData);
+
+      if (!result.success) throw new Error(result.error);
+      
       setUploadProgress({ progress: 80, status: 'إنهاء الرفع...' });
 
-      const { data: { publicUrl } } = supabase.storage.from(bucket).getPublicUrl(`library/${fileName}`);
+      const publicUrl = result.url;
       
       setThumbnail(publicUrl);
       setPreviewUrl(publicUrl);
@@ -94,7 +93,7 @@ export default function LibraryManagement() {
     } catch (err: any) {
       console.error(err);
       setUploadProgress({ progress: 0, status: `خطأ: ${err.message}` });
-      setTimeout(() => setUploadProgress(null), 4000);
+      setTimeout(() => setUploadProgress(null), 5000);
     }
   };
 

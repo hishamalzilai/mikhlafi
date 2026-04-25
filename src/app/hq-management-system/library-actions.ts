@@ -40,7 +40,7 @@ export async function saveLibraryItemAction(formData: FormData) {
       duration: type === 'video' ? duration : null,
     };
 
-    if (id) {
+    if (id && id !== "null" && id !== "undefined") {
       const { error } = await supabaseAdmin.from('media_library').update(mediaData).eq('id', id);
       if (error) throw error;
     } else {
@@ -52,6 +52,7 @@ export async function saveLibraryItemAction(formData: FormData) {
     revalidatePath('/hq-management-system/library');
     return { success: true };
   } catch (err: any) {
+    console.error("[LibraryAction] save error:", err);
     return { success: false, error: err.message };
   }
 }
