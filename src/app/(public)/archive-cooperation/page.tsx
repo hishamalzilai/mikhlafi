@@ -11,7 +11,7 @@ export default function ArchiveCooperationPage() {
       <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 border-t-[6px] border-[#b18c39] text-white p-12 md:p-32 relative overflow-hidden mb-20 shadow-2xl">
          {/* Background Ornaments */}
          <div className="absolute inset-0 bg-[url('/pattern.png')] opacity-5 mix-blend-overlay pointer-events-none"></div>
-         <img src="/newsizelogo.png" alt="" className="absolute -left-32 -bottom-40 w-[60rem] h-auto object-contain grayscale invert mix-blend-screen opacity-5 pointer-events-none" />
+         <img src="/logo-last.png" alt="" className="absolute -left-32 -bottom-40 w-[60rem] h-auto object-contain grayscale invert mix-blend-screen opacity-5 pointer-events-none" />
          <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(circle_at_top_right,rgba(177,140,57,0.08),transparent_50%)]"></div>
          
          <div className="relative z-10 flex flex-col items-center text-center gap-8 max-w-5xl mx-auto">

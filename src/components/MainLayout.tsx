@@ -14,7 +14,7 @@ import {
 import GlobalSearch from './GlobalSearch';
 
 export const PortalLogo = ({ className }: { className?: string }) => (
-  <img src="/newsizelogo.png" alt="الموقع الرسمي لعبدالملك المخلافي" className={`object-contain mix-blend-multiply ${className || ''}`} />
+  <img src="/logo-last.png" alt="الموقع الرسمي لعبدالملك المخلافي" className={`object-contain mix-blend-multiply ${className || ''}`} />
 );
 
 export const YemeniEagle = PortalLogo;

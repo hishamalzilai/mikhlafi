@@ -132,7 +132,7 @@ export default async function Home() {
         {/* 3. سكشن المحطات الوطنية (Interactive Timeline) */}
         <section className="bg-slate-900 text-white p-10 md:p-16 relative overflow-hidden shadow-2xl mx-[-1rem] md:mx-[-2rem] lg:mx-[-4rem] xl:mx-0 xl:rounded-none">
            <div className="absolute -left-20 -bottom-20 w-[40rem] h-auto pointer-events-none grayscale invert mix-blend-screen opacity-[0.05] rotate-12">
-             <Image src="/newsizelogo.png" alt="" width={640} height={640} className="object-contain" />
+             <Image src="/logo-last.png" alt="" width={640} height={640} className="object-contain" />
            </div>
            <div className="relative z-10">
              <div className="text-center space-y-4 mb-16">
