@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState, useRef } from 'react';
-import { supabase } from '@/lib/supabase';
 import { uploadFile, formatSize, type UploadProgress } from '@/lib/upload';
 import { Loader2, Plus, Trash2, Edit, CheckCircle2, Archive, Image as ImageIcon, FileText, Video, Calendar, Eye, Link2, Tag, Upload, X, ExternalLink, CloudUpload, Zap } from 'lucide-react';
+import { getArchiveItemsAction, saveArchiveItemAction, deleteArchiveItemAction } from '../archive-actions';
 
 const ARCHIVE_TYPES = [
   { id: 'photo', label: 'صورة تاريخية', icon: '📸', color: 'text-amber-600 bg-amber-50 border-amber-200', accept: 'image/*' },
@@ -44,7 +44,6 @@ export default function AdminArchivePage() {
   const fetchItems = async () => {
     setLoading(true);
     try {
-      const { getArchiveItemsAction } = await import('../archive-actions');
       const result = await getArchiveItemsAction();
       if (result.success && result.data) {
         setItems(result.data);
@@ -132,7 +131,6 @@ export default function AdminArchivePage() {
       formData.append('file_url', fileUrl);
       formData.append('cover_url', coverUrl);
 
-      const { saveArchiveItemAction } = await import('../archive-actions');
       const result = await saveArchiveItemAction(formData);
       
       if (!result.success) throw new Error(result.error);
@@ -148,7 +146,6 @@ export default function AdminArchivePage() {
   const handleDelete = async (id: number) => {
     if (!confirm("هل أنت متأكد من حذف هذه المادة الأرشيفية نهائياً؟")) return;
     try {
-      const { deleteArchiveItemAction } = await import('../archive-actions');
       const result = await deleteArchiveItemAction(id);
       if (!result.success) throw new Error(result.error);
       fetchItems();

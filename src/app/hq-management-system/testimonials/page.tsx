@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { 
-  getTestimonials, 
+  getTestimonialsAction, 
   createTestimonial, 
   updateTestimonial, 
   deleteTestimonial 
@@ -42,7 +42,6 @@ export default function TestimonialsAdmin() {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const { getTestimonialsAction } = await import('../testimonials-actions');
       const result = await getTestimonialsAction();
       if (result.success && result.data) {
         setTestimonials(result.data);

@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from 'react';
-import { supabase } from '@/lib/supabase';
 import { Loader2, Plus, Trash2, Edit, CheckCircle2, FileText, UserRound } from 'lucide-react';
+import { getArticlesAction, saveArticleAction, deleteArticleAction } from '../articles-actions';
 
 export default function AdminArticlesPage() {
   const [articles, setArticles] = useState<any[]>([]);
@@ -25,7 +25,6 @@ export default function AdminArticlesPage() {
   const fetchArticles = async () => {
     setLoading(true);
     try {
-      const { getArticlesAction } = await import('../articles-actions');
       const result = await getArticlesAction();
       if (result.success && result.data) {
         setArticles(result.data);
@@ -40,6 +39,10 @@ export default function AdminArticlesPage() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchArticles();
+  }, []);
 
   const resetForm = () => {
     setIsAdding(false);

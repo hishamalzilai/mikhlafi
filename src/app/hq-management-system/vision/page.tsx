@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from 'react';
-import { supabase } from '@/lib/supabase';
+import { getStudiesAction, saveStudyAction, deleteStudyAction } from '../vision-actions';
 import { Loader2, Plus, Trash2, Edit, CheckCircle2, BookOpen, UserRound, Tag } from 'lucide-react';
 
 const STUDY_CATEGORIES = ['ورقة عمل', 'دراسة', 'بحث', 'تحليل سياسي', 'رؤية استراتيجية'];
@@ -28,7 +28,6 @@ export default function AdminStudiesPage() {
   const fetchStudies = async () => {
     setLoading(true);
     try {
-      const { getStudiesAction } = await import('../vision-actions');
       const result = await getStudiesAction();
       if (result.success && result.data) {
         setStudies(result.data);
@@ -77,7 +76,6 @@ export default function AdminStudiesPage() {
       formData.append('category', category);
       formData.append('published_date', publishedDate);
 
-      const { saveStudyAction } = await import('../vision-actions');
       const result = await saveStudyAction(formData);
       
       if (!result.success) throw new Error(result.error);
@@ -97,7 +95,6 @@ export default function AdminStudiesPage() {
   const handleDelete = async (id: number) => {
     if(!confirm("هل أنت متأكد من حذف هذه الدراسة نهائياً؟")) return;
     try {
-      const { deleteStudyAction } = await import('../vision-actions');
       const result = await deleteStudyAction(id);
       if (!result.success) throw new Error(result.error);
       fetchStudies();

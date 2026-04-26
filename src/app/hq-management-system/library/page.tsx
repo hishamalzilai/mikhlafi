@@ -7,6 +7,8 @@ import {
   Upload, X, Play, Clock, Loader2, CheckCircle2, Film
 } from 'lucide-react';
 import imageCompression from 'browser-image-compression';
+import { getLibraryAction, bulkSaveLibraryItemsAction, saveLibraryItemAction, deleteLibraryItemAction } from '../library-actions';
+import { uploadMediaAction } from '../upload-actions';
 
 export default function LibraryManagement() {
   const [items, setItems] = useState<any[]>([]);
@@ -41,7 +43,6 @@ export default function LibraryManagement() {
   const fetchItems = async () => {
     setLoading(true);
     try {
-      const { getLibraryAction } = await import('../library-actions');
       const result = await getLibraryAction();
       if (result.success && result.data) setItems(result.data);
     } catch (err) {
@@ -72,7 +73,6 @@ export default function LibraryManagement() {
         }
 
         setUploadProgress({ progress: 40, status: `${statusPrefix}جاري الرفع...` });
-        const { uploadMediaAction } = await import('../upload-actions');
         const formData = new FormData();
         formData.append('file', fileToUpload);
         formData.append('path', 'library');
@@ -90,7 +90,6 @@ export default function LibraryManagement() {
         });
       }
 
-      const { bulkSaveLibraryItemsAction } = await import('../library-actions');
       await bulkSaveLibraryItemsAction(uploadedItems);
       fetchItems();
       resetForm();
@@ -141,7 +140,6 @@ export default function LibraryManagement() {
       formData.append('thumbnail_url', thumbnail);
       formData.append('duration', duration);
 
-      const { saveLibraryItemAction } = await import('../library-actions');
       const result = await saveLibraryItemAction(formData);
       if (!result.success) throw new Error(result.error);
 
@@ -158,7 +156,6 @@ export default function LibraryManagement() {
 
   const handleDelete = async (id: number) => {
     if (confirm('حذف هذه المادة؟')) {
-      const { deleteLibraryItemAction } = await import('../library-actions');
       await deleteLibraryItemAction(id);
       fetchItems();
     }
