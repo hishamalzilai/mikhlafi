@@ -7,7 +7,6 @@ import { supabaseAdmin } from '@/lib/supabase-admin';
 import TimelineCarousel from '@/components/TimelineCarousel';
 
 export const revalidate = 60; // Revalidate every minute
-export const dynamic = 'force-dynamic';
 
 export default async function Home() {
   const content = await getHomepageSettings();

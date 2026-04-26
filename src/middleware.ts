@@ -51,17 +51,19 @@ export function middleware(request: NextRequest) {
     // Set CSP
     response.headers.set('Content-Security-Policy', cspHeader);
     
-    // Protection against content sniffing
+    // Security Hardening Headers
     response.headers.set('X-Content-Type-Options', 'nosniff');
-    
-    // Cross-site scripting protection
+    response.headers.set('X-Frame-Options', 'DENY');
     response.headers.set('X-XSS-Protection', '1; mode=block');
-    
-    // Referrer policy
     response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+    response.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), interest-cohort=()');
+    response.headers.set('X-Permitted-Cross-Domain-Policies', 'none');
+    response.headers.set('Cross-Origin-Embedder-Policy', 'unsafe-none'); // Allow cross-origin images but protect the doc
+    response.headers.set('Cross-Origin-Opener-Policy', 'same-origin');
+    response.headers.set('Cross-Origin-Resource-Policy', 'same-origin');
 
     // HSTS (Strict-Transport-Security)
-    response.headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
+    response.headers.set('Strict-Transport-Security', 'max-age=63072000; includeSubDomains; preload');
 
     // 3. Cache Control optimization for Assets
     if (request.nextUrl.pathname.startsWith('/_next/static') || request.nextUrl.pathname.includes('/public/')) {

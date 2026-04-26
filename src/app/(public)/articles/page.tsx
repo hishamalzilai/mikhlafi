@@ -1,8 +1,7 @@
 import { supabaseAdmin } from '@/lib/supabase-admin';
 import ArticlesListClient from './ArticlesListClient';
 
-export const revalidate = 3600;
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 
 async function getArticles() {
   const { data } = await supabaseAdmin
