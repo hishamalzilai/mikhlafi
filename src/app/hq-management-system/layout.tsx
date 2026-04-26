@@ -62,6 +62,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { href: "/hq-management-system/vision", label: "الدراسات", icon: BookOpen },
     { href: "/hq-management-system/library", label: "المكتبة المرئية", icon: Film },
     { href: "/hq-management-system/archive", label: "الأرشيف الشامل", icon: FolderArchive },
+    { href: "/hq-management-system/navigation", label: "ترتيب القائمة", icon: Menu, color: "text-[#b18c39]" },
     { href: "/hq-management-system/branding", label: "الهوية البصرية", icon: Palette, color: "text-[#b18c39]" },
   ];
 

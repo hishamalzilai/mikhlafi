@@ -13,6 +13,8 @@ import {
 } from 'lucide-react';
 import GlobalSearch from './GlobalSearch';
 import { getBrandingSettings, BrandingSettings } from '@/app/hq-management-system/branding-actions';
+import { getNavOrder } from '@/app/hq-management-system/nav-actions';
+import { MASTER_NAVIGATION, NavItem } from '@/lib/nav-config';
 
 export const PortalLogo = ({ className, settings, type = 'header' }: { className?: string, settings?: BrandingSettings | null, type?: 'header' | 'footer' }) => {
   const logoUrl = type === 'header' 
@@ -35,32 +37,28 @@ export const PortalLogo = ({ className, settings, type = 'header' }: { className
 
 export const YemeniEagle = PortalLogo;
 
-export const navigationLinks = [
-  { id: 'home', path: '/', title: 'الرئيسية' },
-  { id: 'bio', path: '/bio', title: 'السيرة والمحطات' },
-  { id: 'vision', path: '/vision', title: 'دراسات وأبحاث' },
-  { id: 'news', path: '/news', title: 'أخبار وآراء' },
-  { id: 'articles', path: '/articles', title: 'مقالات' },
-  { id: 'testimonials', path: '/testimonials', title: 'شهادات وآراء' },
-  { id: 'archive', path: '/archive', title: 'الأرشيف الشامل' },
-  { id: 'archive-cooperation', path: '/archive-cooperation', title: 'دعوة تعاون توثيق' },
-  { id: 'library', path: '/library', title: 'المكتبة المرئية' },
-  { id: 'contact', path: '/contact', title: 'تواصل' },
-];
-
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [currentDate, setCurrentDate] = useState('');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [branding, setBranding] = useState<BrandingSettings | null>(null);
+  const [navLinks, setNavLinks] = useState<NavItem[]>(MASTER_NAVIGATION);
   const pathname = usePathname();
 
   useEffect(() => {
-    const fetchBranding = async () => {
-      const data = await getBrandingSettings();
-      setBranding(data);
+    const fetchData = async () => {
+      // Fetch Branding
+      const brandingData = await getBrandingSettings();
+      setBranding(brandingData);
+
+      // Fetch Nav Order
+      const order = await getNavOrder();
+      const mapped = order.map(id => MASTER_NAVIGATION.find(item => item.id === id)).filter(Boolean) as NavItem[];
+      // Add any master items that might be missing from the saved order
+      const missing = MASTER_NAVIGATION.filter(item => !order.includes(item.id));
+      setNavLinks([...mapped, ...missing]);
     };
-    fetchBranding();
+    fetchData();
     
     try {
       const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' } as const;
@@ -116,7 +114,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
       <nav className="bg-white/90 backdrop-blur-md sticky top-0 z-50 shadow-md border-b border-slate-100">
         <div className="max-w-[1440px] mx-auto px-4">
           <ul className="hidden lg:flex items-center justify-between text-slate-700 text-sm font-bold w-full" suppressHydrationWarning>
-            {navigationLinks.map((link) => {
+            {navLinks.map((link) => {
               const isActive = pathname === link.path;
               return (
                 <li key={link.id} className={`flex-1 text-center border-l border-slate-50 ${isActive ? 'bg-[#b18c39] text-white shadow-inner' : 'hover:text-[#b18c39] hover:bg-slate-50 transition-all cursor-pointer'}`}>
@@ -135,7 +133,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
           </div>
           {isMenuOpen && (
             <div className="lg:hidden flex flex-col bg-white border-t border-slate-100">
-              {navigationLinks.map((link) => {
+              {navLinks.map((link) => {
                 const isActive = pathname === link.path;
                 return (
                   <Link
@@ -172,7 +170,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
             <div className="flex flex-col items-center md:items-start">
               <h4 className="font-black text-slate-900 text-xl mb-12 border-b border-slate-100 pb-4 inline-block tracking-[0.2em]">خارطة الموقع</h4>
               <ul className="space-y-6 text-sm font-bold text-slate-500">
-                {navigationLinks.slice(1, 8).map(link => (
+                {navLinks.slice(1, 8).map(link => (
                   <li key={link.id} className="hover:text-[#b18c39] transition-colors flex items-center md:justify-start justify-center gap-4 group font-black uppercase text-xs tracking-widest">
                     <div className="hidden md:block w-2 h-0.5 bg-slate-300 group-hover:bg-[#b18c39] transition-all"></div>
                     <Link href={link.path}>{link.title}</Link>
