@@ -39,11 +39,11 @@ export const navigationLinks = [
   { id: 'home', path: '/', title: 'الرئيسية' },
   { id: 'bio', path: '/bio', title: 'السيرة والمحطات' },
   { id: 'vision', path: '/vision', title: 'دراسات وأبحاث' },
-  { id: 'testimonials', path: '/testimonials', title: 'شهادات وآراء' },
+  { id: 'news', path: '/news', title: 'أخبار وآراء' },
   { id: 'articles', path: '/articles', title: 'مقالات' },
+  { id: 'testimonials', path: '/testimonials', title: 'شهادات وآراء' },
   { id: 'archive', path: '/archive', title: 'الأرشيف الشامل' },
   { id: 'archive-cooperation', path: '/archive-cooperation', title: 'دعوة تعاون توثيق' },
-  { id: 'news', path: '/news', title: 'أخبار وآراء' },
   { id: 'library', path: '/library', title: 'المكتبة المرئية' },
   { id: 'contact', path: '/contact', title: 'تواصل' },
 ];
