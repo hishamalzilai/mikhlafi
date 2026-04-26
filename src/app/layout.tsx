@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import { getBrandingSettings } from './hq-management-system/branding-actions';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://abdulmalik-almekhlafi.com'),
@@ -62,14 +63,23 @@ export const viewport = {
   maximumScale: 1,
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const branding = await getBrandingSettings();
+
   return (
     <html lang="ar" dir="rtl">
       <body className="min-h-screen selection:bg-amber-100 selection:text-amber-900 bg-[#fafaf9] text-[#1c1917]">
+        {/* We can inject branding as a CSS variable or pass to a context provider if needed */}
+        <style dangerouslySetInnerHTML={{ __html: `
+          :root {
+            --header-logo-scale: ${branding.header_logo_scale};
+            --footer-logo-scale: ${branding.footer_logo_scale};
+          }
+        `}} />
         {children}
       </body>
     </html>

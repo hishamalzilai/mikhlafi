@@ -12,10 +12,26 @@ import {
   Command
 } from 'lucide-react';
 import GlobalSearch from './GlobalSearch';
+import { getBrandingSettings, BrandingSettings } from '@/app/hq-management-system/branding-actions';
 
-export const PortalLogo = ({ className }: { className?: string }) => (
-  <img src="/logo-last.png" alt="الموقع الرسمي لعبدالملك المخلافي" className={`object-contain mix-blend-multiply ${className || ''}`} />
-);
+export const PortalLogo = ({ className, settings, type = 'header' }: { className?: string, settings?: BrandingSettings | null, type?: 'header' | 'footer' }) => {
+  const logoUrl = type === 'header' 
+    ? (settings?.header_logo_url || "/logo-last.png")
+    : (settings?.footer_logo_url || "/logo-last.png");
+  
+  const scale = type === 'header'
+    ? (settings?.header_logo_scale || 1.0)
+    : (settings?.footer_logo_scale || 1.0);
+
+  return (
+    <img 
+      src={logoUrl} 
+      alt="الموقع الرسمي لعبدالملك المخلافي" 
+      style={{ transform: `scale(${scale})`, transition: 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)' }}
+      className={`object-contain mix-blend-multiply ${className || ''}`} 
+    />
+  );
+};
 
 export const YemeniEagle = PortalLogo;
 
@@ -36,9 +52,16 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [currentDate, setCurrentDate] = useState('');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [branding, setBranding] = useState<BrandingSettings | null>(null);
   const pathname = usePathname();
 
   useEffect(() => {
+    const fetchBranding = async () => {
+      const data = await getBrandingSettings();
+      setBranding(data);
+    };
+    fetchBranding();
+    
     try {
       const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' } as const;
       setCurrentDate(new Intl.DateTimeFormat('ar-YE', options).format(new Date()));
@@ -85,7 +108,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
       <header className="bg-white py-3 md:py-4 border-b-4 border-slate-100 shadow-sm relative overflow-hidden">
         <div className="max-w-[1440px] mx-auto px-4 flex flex-col md:flex-row justify-between items-center relative z-10 gap-3 md:gap-0">
           <div className="flex flex-col md:flex-row items-center gap-4 md:gap-5 text-center md:text-right">
-            <PortalLogo className="h-32 md:h-44 w-auto" />
+            <PortalLogo className="h-32 md:h-44 w-auto" settings={branding} type="header" />
           </div>
         </div>
       </header>
@@ -139,7 +162,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
           <div className="grid md:grid-cols-4 gap-12 md:gap-24 mb-16 md:mb-24 text-center md:text-right">
             <div className="col-span-2 flex flex-col items-center md:items-start">
               <div className="flex flex-col md:flex-row items-center md:items-start gap-4 md:gap-8 mb-8 md:mb-12">
-                <PortalLogo className="h-40 md:h-52 w-auto" />
+                <PortalLogo className="h-40 md:h-52 w-auto" settings={branding} type="footer" />
               </div>
               <p className="text-lg md:text-xl text-slate-500 leading-relaxed max-w-lg font-bold md:pr-16 tracking-tight">
                 الموقع الرسمي والأرشيف التاريخي للمفكر والسياسي اليمني عبدالملك المخلافي، بهدف توثيق المواقف، الأبحاث، وحفظ الذاكرة الوطنية المعاصرة.

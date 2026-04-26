@@ -67,3 +67,10 @@ export const homepageSchema = z.object({
   vision_quote: z.string().min(2),
   timeline_items: z.array(timelineItemSchema).optional(),
 });
+
+export const brandingSchema = z.object({
+  header_logo_url: z.string().min(1, "رابط الشعار مطلوب"),
+  header_logo_scale: z.coerce.number().min(0.1).max(3.0).default(1.0),
+  footer_logo_url: z.string().min(1, "رابط الشعار مطلوب"),
+  footer_logo_scale: z.coerce.number().min(0.1).max(3.0).default(1.0),
+});

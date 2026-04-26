@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import { Loader2, LayoutDashboard, Newspaper, FileText, BookOpen, Film, FolderArchive, LogOut, UserRound, Menu, X, Home, Quote } from 'lucide-react';
+import { Loader2, LayoutDashboard, Newspaper, FileText, BookOpen, Film, FolderArchive, LogOut, UserRound, Menu, X, Home, Quote, Palette } from 'lucide-react';
 import Link from 'next/link';
 import { checkAdminSession, logoutAdmin } from './actions';
 
@@ -62,6 +62,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { href: "/hq-management-system/vision", label: "الدراسات", icon: BookOpen },
     { href: "/hq-management-system/library", label: "المكتبة المرئية", icon: Film },
     { href: "/hq-management-system/archive", label: "الأرشيف الشامل", icon: FolderArchive },
+    { href: "/hq-management-system/branding", label: "الهوية البصرية", icon: Palette, color: "text-[#b18c39]" },
   ];
 
   return (
