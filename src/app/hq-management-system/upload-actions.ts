@@ -15,7 +15,8 @@ export async function uploadMediaAction(formData: FormData) {
     if (!file) throw new Error("No file uploaded");
 
     const buffer = Buffer.from(await file.arrayBuffer());
-    const fileExt = file.name.split('.').pop() || 'png';
+    const originalName = file.name || 'image.png';
+    const fileExt = originalName.split('.').pop() || 'png';
     const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
     const filePath = `${path}/${fileName}`;
 
