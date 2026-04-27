@@ -74,7 +74,8 @@ export default function LibraryManagement() {
 
         setUploadProgress({ progress: 40, status: `${statusPrefix}جاري الرفع...` });
         const formData = new FormData();
-        formData.append('file', fileToUpload, file.name || 'image.jpg');
+        const safeName = `upload-${Date.now()}.${file.name.split('.').pop() || 'jpg'}`;
+        formData.append('file', fileToUpload, safeName);
         formData.append('path', 'library');
         formData.append('bucket', 'media');
 
