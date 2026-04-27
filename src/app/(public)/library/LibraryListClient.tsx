@@ -92,9 +92,7 @@ export default function LibraryListClient({ mediaList }: LibraryListClientProps)
                </div>
                
                <div className="absolute bottom-0 left-0 right-0 p-5 z-20">
-                  <h3 className="text-white font-black text-lg md:text-xl leading-snug drop-shadow-lg mb-2 line-clamp-2">
-                     {item.title || item.thumbnail_url?.split('/').pop()?.split('_').pop()?.split('.')[0] || (item.type === 'video' ? 'فيديو جديد' : 'صورة جديدة')}
-                  </h3>
+                  {/* Title removed as requested */}
                   <div className="flex items-center gap-4 text-slate-300 text-xs font-bold">
                      {item.type === 'video' && item.duration && (
                         <span className="flex items-center gap-1.5 bg-black/40 px-2.5 py-1 rounded-md backdrop-blur-sm border border-white/10">
@@ -170,12 +168,11 @@ export default function LibraryListClient({ mediaList }: LibraryListClientProps)
               </div>
              
              {/* Info overlay below the image */}
-             <div className="max-w-4xl w-full text-center animate-in slide-in-from-bottom-8 duration-700 z-[99999]">
-                <h3 className="text-3xl md:text-4xl font-black text-white drop-shadow-lg mb-4 text-shadow-sm">{selectedPhoto.title}</h3>
-                {selectedPhoto.desc && (
-                  <p className="text-lg text-slate-300 font-medium leading-relaxed max-w-2xl mx-auto">{selectedPhoto.desc}</p>
-                )}
-             </div>
+             {selectedPhoto.desc && (
+                <div className="max-w-4xl w-full text-center animate-in slide-in-from-bottom-8 duration-700 z-[99999] mt-4">
+                  <p className="text-lg text-white font-medium leading-relaxed max-w-2xl mx-auto drop-shadow-lg">{selectedPhoto.desc}</p>
+                </div>
+             )}
           </div>,
           document.body
        )}
