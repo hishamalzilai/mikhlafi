@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   Plus, Search, Filter, MoreVertical, Edit2, Edit3, Trash2, 
-  Image as ImageIcon, Video, FileText, Check, ChevronRight,
+  Image as ImageIcon, Video, FileText, Check, ChevronRight, ChevronLeft,
   Upload, X, Play, Clock, Loader2, CheckCircle2, Film
 } from 'lucide-react';
 import imageCompression from 'browser-image-compression';
@@ -162,6 +162,7 @@ export default function LibraryManagement() {
   };
 
   const filteredItems = filterType === 'all' ? items : items.filter(i => i.type === filterType);
+  const totalPages = Math.max(1, Math.ceil(filteredItems.length / ITEMS_PER_PAGE));
   const paginatedItems = filteredItems.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
 
   return (
@@ -268,30 +269,55 @@ export default function LibraryManagement() {
 
        {/* List View */}
        {!isAdding && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-             {paginatedItems.map(item => (
-                <div key={item.id} className="bg-white rounded-3xl overflow-hidden border border-slate-200 shadow-sm hover:shadow-xl transition-all group relative">
-                   <div className="aspect-video relative overflow-hidden bg-slate-100">
-                      <img src={item.thumbnail_url} className="w-full h-full object-cover group-hover:scale-105 transition-all duration-700" alt={item.title} />
-                      {item.type === 'video' && (
-                        <div className="absolute inset-0 flex items-center justify-center bg-black/20">
-                          <Play className="w-12 h-12 text-white drop-shadow-lg" />
-                        </div>
-                      )}
-                   </div>
-                   <div className="p-6">
-                      <h3 className="font-black text-slate-900 text-lg line-clamp-1 mb-2">{item.title}</h3>
-                      <div className="flex justify-between items-center">
-                        <span className={`text-[10px] font-black px-3 py-1 rounded-full border ${item.type === 'video' ? 'bg-purple-50 text-purple-600 border-purple-100' : 'bg-amber-50 text-amber-600 border-amber-100'}`}>
-                           {item.type === 'video' ? 'فيديو' : 'صورة'}
-                        </span>
-                        <div className="flex gap-2">
-                           <button onClick={() => handleDelete(item.id)} className="text-red-400 hover:text-red-600 p-2"><Trash2 size={18}/></button>
-                        </div>
+          <div className="space-y-8">
+             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {paginatedItems.map(item => (
+                   <div key={item.id} className="bg-white rounded-3xl overflow-hidden border border-slate-200 shadow-sm hover:shadow-xl transition-all group relative">
+                      <div className="aspect-video relative overflow-hidden bg-slate-100">
+                         <img src={item.thumbnail_url} className="w-full h-full object-cover group-hover:scale-105 transition-all duration-700" alt={item.title} />
+                         {item.type === 'video' && (
+                           <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+                             <Play className="w-12 h-12 text-white drop-shadow-lg" />
+                           </div>
+                         )}
+                      </div>
+                      <div className="p-6">
+                         <h3 className="font-black text-slate-900 text-lg line-clamp-1 mb-2">{item.title}</h3>
+                         <div className="flex justify-between items-center">
+                           <span className={`text-[10px] font-black px-3 py-1 rounded-full border ${item.type === 'video' ? 'bg-purple-50 text-purple-600 border-purple-100' : 'bg-amber-50 text-amber-600 border-amber-100'}`}>
+                              {item.type === 'video' ? 'فيديو' : 'صورة'}
+                           </span>
+                           <div className="flex gap-2">
+                              <button onClick={() => handleDelete(item.id)} className="text-red-400 hover:text-red-600 p-2"><Trash2 size={18}/></button>
+                           </div>
+                         </div>
                       </div>
                    </div>
+                ))}
+             </div>
+
+             {/* Pagination Controls */}
+             {totalPages > 1 && (
+                <div className="flex flex-wrap items-center justify-center gap-4 mt-12 bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
+                   <button 
+                      onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))} 
+                      disabled={currentPage === 1} 
+                      className="flex items-center gap-2 px-6 py-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-600 hover:bg-[#b18c39] hover:text-white disabled:opacity-50 transition-all font-bold"
+                   >
+                     <ChevronRight className="w-5 h-5" /> السابق
+                   </button>
+                   <span className="text-slate-500 font-bold">
+                      صفحة {currentPage} من {totalPages}
+                   </span>
+                   <button 
+                      onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))} 
+                      disabled={currentPage === totalPages} 
+                      className="flex items-center gap-2 px-6 py-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-600 hover:bg-[#b18c39] hover:text-white disabled:opacity-50 transition-all font-bold"
+                   >
+                     التالي <ChevronLeft className="w-5 h-5" />
+                   </button>
                 </div>
-             ))}
+             )}
           </div>
        )}
     </div>
