@@ -66,10 +66,17 @@ export default function LibraryManagement() {
         setUploadProgress({ progress: 10, status: `${statusPrefix}جاري التحضير...` });
 
         let fileToUpload = file;
-        if (file.type.startsWith('image/')) {
+        const isImage = file.type.startsWith('image/') || /\.(jpg|jpeg|png|webp|heic)$/i.test(file.name);
+        
+        if (isImage) {
           setUploadProgress({ progress: 20, status: `${statusPrefix}جاري ضغط الصورة...` });
           const options = { maxSizeMB: 1, maxWidthOrHeight: 1920, useWebWorker: true };
-          fileToUpload = await imageCompression(file, options);
+          try {
+             fileToUpload = await imageCompression(file, options);
+          } catch (e) {
+             console.warn("Compression failed, uploading original stream.", e);
+             fileToUpload = file;
+          }
         }
 
         setUploadProgress({ progress: 40, status: `${statusPrefix}جاري الرفع...` });
