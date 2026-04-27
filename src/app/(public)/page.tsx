@@ -213,7 +213,7 @@ export default async function Home() {
                     <div className="w-20 h-20 bg-[#b18c39]/90 rounded-full flex items-center justify-center mb-6 shadow-2xl group-hover:scale-110 transition-all cursor-pointer">
                        <Play className="text-white w-10 h-10 ml-1" />
                     </div>
-                    <h4 className="font-black text-3xl text-white drop-shadow-md mb-2">{latestVideo?.title || "فيديوجرافيك المواقف"}</h4>
+                    <h4 className="font-black text-3xl text-white drop-shadow-md mb-2">فيديوجرافيك المواقف</h4>
                     <p className="text-slate-300 font-bold text-sm mb-6 line-clamp-1 px-4">{latestVideo?.description || "توثيق مرئي لأهم الخطابات والمقابلات والمحطات السيادية"}</p>
                     <Link href="/library" className="bg-[#b18c39] text-white px-8 py-3 rounded-none font-black text-xs hover:bg-white hover:text-slate-900 transition-all flex items-center gap-2 shadow-xl opacity-0 group-hover:opacity-100">استعرض الفيديوهات <ArrowLeft size={14}/></Link>
                  </div>
@@ -232,7 +232,7 @@ export default async function Home() {
                     <div className="w-20 h-20 bg-slate-800/90 rounded-full border border-slate-700 flex items-center justify-center mb-6 shadow-2xl group-hover:bg-[#b18c39] group-hover:border-[#b18c39] transition-all cursor-pointer">
                        <Users className="text-white w-10 h-10" />
                     </div>
-                    <h4 className="font-black text-3xl text-white drop-shadow-md mb-2">{latestPhoto?.title || "معرض الصور الوطنية"}</h4>
+                    <h4 className="font-black text-3xl text-white drop-shadow-md mb-2">معرض الصور الوطنية</h4>
                     <p className="text-slate-300 font-bold text-sm mb-6 line-clamp-1 px-4">{latestPhoto?.description || "لقطات توثيقية ترصد النشاط الدبلوماسي والمشاركات الدولية"}</p>
                     <Link href="/library" className="bg-[#b18c39] text-white px-8 py-3 rounded-none font-black text-xs hover:bg-white hover:text-slate-900 transition-all flex items-center gap-2 shadow-xl opacity-0 group-hover:opacity-100">استعرض الصور <ArrowLeft size={14}/></Link>
                  </div>
