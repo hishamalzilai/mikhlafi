@@ -23,7 +23,7 @@ export default async function Home() {
     .from('media_library')
     .select('*')
     .eq('type', 'video')
-    .order('id', { ascending: false })
+    .order('created_at', { ascending: false })
     .limit(1)
     .single();
 
@@ -31,7 +31,7 @@ export default async function Home() {
     .from('media_library')
     .select('*')
     .eq('type', 'photo')
-    .order('id', { ascending: false })
+    .order('created_at', { ascending: false })
     .limit(1)
     .single();
 
@@ -39,7 +39,7 @@ export default async function Home() {
   const { data: latestNews } = await supabaseAdmin
     .from('news')
     .select('*')
-    .order('created_at', { ascending: false })
+    .order('published_date', { ascending: false })
     .limit(3);
 
   // Fallback defaults in case no data yet

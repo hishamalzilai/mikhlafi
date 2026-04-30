@@ -9,7 +9,7 @@ async function getArchive() {
   const { data } = await supabaseAdmin
     .from('archive')
     .select('*')
-    .order('id', { ascending: false });
+    .order('published_date', { ascending: false });
   return data || [];
 }
 

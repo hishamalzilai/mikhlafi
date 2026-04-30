@@ -7,7 +7,7 @@ async function getStudies() {
   const { data } = await supabaseAdmin
     .from('studies')
     .select('*')
-    .order('id', { ascending: false });
+    .order('published_date', { ascending: false });
   return data || [];
 }
 

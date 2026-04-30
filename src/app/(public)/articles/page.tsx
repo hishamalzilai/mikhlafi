@@ -7,7 +7,7 @@ async function getArticles() {
   const { data } = await supabaseAdmin
     .from('articles')
     .select('*')
-    .order('id', { ascending: false });
+    .order('published_date', { ascending: false });
   return data || [];
 }
 

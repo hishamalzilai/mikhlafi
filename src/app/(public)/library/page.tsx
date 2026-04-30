@@ -9,7 +9,7 @@ async function getMedia() {
   const { data } = await supabaseAdmin
     .from('media_library')
     .select('*')
-    .order('id', { ascending: false });
+    .order('created_at', { ascending: false });
   return data || [];
 }
 

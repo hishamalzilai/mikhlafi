@@ -13,7 +13,7 @@ export async function getNewsAction() {
     const { data, error } = await supabaseAdmin
       .from('news')
       .select('*')
-      .order('created_at', { ascending: false });
+      .order('published_date', { ascending: false });
     if (error) throw error;
     return { success: true, data };
   } catch (err: any) {

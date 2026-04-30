@@ -13,7 +13,7 @@ export async function getArticlesAction() {
     const { data, error } = await supabaseAdmin
       .from('articles')
       .select('*')
-      .order('id', { ascending: false });
+      .order('published_date', { ascending: false });
     if (error) throw error;
     return { success: true, data };
   } catch (err: any) {

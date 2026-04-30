@@ -7,7 +7,7 @@ async function getNews() {
   const { data } = await supabaseAdmin
     .from('news')
     .select('*')
-    .order('created_at', { ascending: false });
+    .order('published_date', { ascending: false });
   return data || [];
 }
 

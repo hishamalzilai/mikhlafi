@@ -10,7 +10,7 @@ export async function GET() {
   const { data, error } = await supabaseAdmin
     .from('articles')
     .select('*')
-    .order('created_at', { ascending: false });
+    .order('published_date', { ascending: false });
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   return NextResponse.json(data);
 }
