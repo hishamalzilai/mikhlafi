@@ -92,12 +92,12 @@ export default function ArchiveDetailClient({ item }: ArchiveDetailClientProps) 
                        <div className="bg-slate-50 border border-slate-200 p-8 rounded-xl font-serif text-xl border-dashed leading-relaxed text-slate-800">{item.description}</div>
                        <div className="mt-auto pt-16 flex flex-col sm:flex-row justify-center gap-4">
                           {item.file_url && (
-                            <a href={item.file_url} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-3 bg-slate-900 hover:bg-slate-800 text-white px-8 py-4 rounded-full font-black transition-colors text-lg shadow-lg w-full sm:w-auto">
+                            <a href={`/api/archive/${item.id}/download?action=view`} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-3 bg-slate-900 hover:bg-slate-800 text-white px-8 py-4 rounded-full font-black transition-colors text-lg shadow-lg w-full sm:w-auto">
                                <Eye className="w-5 h-5" /> تصفح الوثيقة الكاملة
                             </a>
                           )}
                           {item.file_url && (
-                            <a href={item.file_url} download className="flex items-center justify-center gap-3 bg-white hover:bg-slate-50 text-slate-900 border-2 border-slate-200 px-8 py-4 rounded-full font-black transition-colors text-lg shadow-sm w-full sm:w-auto">
+                            <a href={`/api/archive/${item.id}/download?action=download`} download className="flex items-center justify-center gap-3 bg-white hover:bg-slate-50 text-slate-900 border-2 border-slate-200 px-8 py-4 rounded-full font-black transition-colors text-lg shadow-sm w-full sm:w-auto">
                                <Download className="w-5 h-5" /> تحميل الأصل (PDF)
                             </a>
                           )}
