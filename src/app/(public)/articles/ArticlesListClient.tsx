@@ -39,7 +39,7 @@ export default function ArticlesListClient({ articlesList }: ArticlesListClientP
                          <div className="text-sm md:text-base font-black text-slate-800">{article.author}</div>
                          <div className="flex items-center gap-1.5 text-xs text-slate-500 font-bold mt-1">
                            <Calendar className="w-3.5 h-3.5" />
-                           {article.date}
+                           {article.published_date || article.date}
                          </div>
                        </div>
                      </div>

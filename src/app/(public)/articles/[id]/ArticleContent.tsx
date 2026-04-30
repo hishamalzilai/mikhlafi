@@ -150,7 +150,7 @@ export default function ArticleContent({ articleData }: ArticleContentProps) {
                        </div>
                        <div className="flex items-center gap-2 text-lg font-bold">
                           <Calendar className="w-5 h-5" />
-                          {articleData.date || articleData.published_date}
+                          {articleData.published_date || articleData.date}
                        </div>
                     </div>
 
