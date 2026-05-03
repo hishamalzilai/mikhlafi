@@ -58,6 +58,8 @@ interface TestimonialContentProps {
     content: string;
     author_image?: string;
     created_at: string;
+    title?: string;
+    published_date?: string;
   };
 }
 
@@ -153,7 +155,7 @@ export default function Content({ data }: TestimonialContentProps) {
               {/* Document Header */}
               <div className="border-b-2 border-slate-900 pb-8 mb-12 relative flex justify-between items-end z-10">
                  <div>
-                    <span className="text-[#b18c39] font-black uppercase tracking-[0.3em] text-sm mb-4 block font-sans">شهادة في الموقف والمسيرة</span>
+                    <span className="text-[#b18c39] font-black uppercase tracking-[0.3em] text-sm mb-4 block font-sans">{data.title || 'شهادة في الموقف والمسيرة الوطنية'}</span>
                     <h1 className="text-4xl md:text-5xl lg:text-7xl font-black text-slate-900 leading-tight max-w-4xl font-sans mb-8">
                        {data.author_name} يكتب عن القامة الوطنية
                     </h1>
@@ -176,7 +178,7 @@ export default function Content({ data }: TestimonialContentProps) {
                        </div>
                        <div className="flex items-center gap-2 text-lg font-bold border-r pr-8 border-slate-200">
                           <Calendar className="w-5 h-5 text-[#b18c39]" />
-                          {formatDate(data.created_at)}
+                          {formatDate(data.published_date || data.created_at)}
                        </div>
                     </div>
 
@@ -199,14 +201,10 @@ export default function Content({ data }: TestimonialContentProps) {
                     </div>
                  </div>
                  
-                 {/* Page Counter */}
-                 <div className="text-slate-400 font-sans text-base md:text-lg font-bold absolute top-0 left-0">
-                    صفحة {currentPage} من {totalPages}
-                 </div>
               </div>
 
               {/* Main Text Content */}
-              <article className="relative z-10 prose prose-lg md:prose-xl lg:prose-2xl max-w-none text-slate-800 prose-headings:font-black prose-p:text-justify prose-p:leading-[2.4] flex-1 whitespace-pre-wrap">
+              <article className="relative z-10 prose prose-lg md:prose-xl lg:prose-2xl max-w-none text-slate-800 prose-headings:font-black prose-p:text-justify prose-p:leading-[2.4] flex-1 whitespace-pre-wrap prose-p:text-[18px] prose-p:font-bold">
                  {paginatedContent.map((paragraph, index) => (
                     <p key={index} className="mb-8 font-medium">{paragraph}</p>
                  ))}
@@ -244,6 +242,8 @@ export default function Content({ data }: TestimonialContentProps) {
                </button>
             </div>
           )}
+
+
        </div>
     </div>
   );

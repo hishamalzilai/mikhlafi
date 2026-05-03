@@ -61,6 +61,10 @@ next-env.d.ts
 !public/*.jpg
 !public/*.jpeg
 !public/*.webp
+!public/**/*.png
+!public/**/*.jpg
+!public/**/*.jpeg
+!public/**/*.webp
 !src/app/*.png
 !src/app/apple-icon.png
 !src/app/icon.png

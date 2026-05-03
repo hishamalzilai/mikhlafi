@@ -24,7 +24,7 @@ import { supabaseAdmin as supabase } from '@/lib/supabase-admin';
 export async function getTestimonials() {
   const { data, error } = await supabase
     .from('testimonials')
-    .select('id, author_name, author_title, content, author_image, order_index')
+    .select('id, title, author_name, author_title, content, author_image, order_index, published_date, created_at')
     .order('order_index', { ascending: true })
     .order('created_at', { ascending: false });
 

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { Calendar, UserRound, ArrowRight, Printer, Download, ChevronRight, ChevronLeft, MessageCircle, Send, Link2, Check, Share2 } from 'lucide-react';
 
@@ -57,7 +57,11 @@ export default function NewsContent({ newsItem }: NewsContentProps) {
   const handleNext = () => { if (currentPage < totalPages) { setCurrentPage(p => p + 1); scrollToTop(); } };
   const handlePrev = () => { if (currentPage > 1) { setCurrentPage(p => p - 1); scrollToTop(); } };
 
-  const shareUrl = typeof window !== 'undefined' ? window.location.href : '';
+  const [shareUrl, setShareUrl] = useState('');
+  useEffect(() => {
+    setShareUrl(window.location.href);
+  }, []);
+
   const handleCopyLink = () => { navigator.clipboard.writeText(shareUrl); setCopied(true); setTimeout(() => setCopied(false), 2000); };
 
   return (
@@ -121,7 +125,7 @@ export default function NewsContent({ newsItem }: NewsContentProps) {
                   </div>
               )}
 
-              <article className="prose prose-lg md:prose-xl lg:prose-xl max-w-none text-slate-800 prose-headings:font-black prose-p:text-justify prose-p:leading-[2.2] flex-1 whitespace-pre-wrap">
+              <article className="prose prose-lg md:prose-xl lg:prose-xl max-w-none text-slate-800 prose-headings:font-black prose-p:text-justify prose-p:leading-[2.2] flex-1 whitespace-pre-wrap prose-p:text-[18px] prose-p:font-bold">
                  {paginatedContent.map((paragraph: string, index: number) => (
                     <p key={index} className="mb-8">{paragraph}</p>
                  ))}

@@ -30,6 +30,8 @@ export default function TestimonialsAdmin() {
   const [formData, setFormData] = useState({
     author_name: '',
     author_title: '',
+    title: '',
+    published_date: '',
     content: '',
     author_image: '',
     order_index: '0'
@@ -81,6 +83,8 @@ export default function TestimonialsAdmin() {
     setFormData({
       author_name: item.author_name,
       author_title: item.author_title || '',
+      title: item.title || '',
+      published_date: item.published_date ? item.published_date.split('T')[0] : '',
       content: item.content,
       author_image: item.author_image || '',
       order_index: item.order_index.toString()
@@ -101,7 +105,7 @@ export default function TestimonialsAdmin() {
   const cancel = () => {
     setEditingId(null);
     setIsAdding(false);
-    setFormData({ author_name: '', author_title: '', content: '', author_image: '', order_index: '0' });
+    setFormData({ author_name: '', author_title: '', title: '', published_date: '', content: '', author_image: '', order_index: '0' });
   };
 
   return (
@@ -136,7 +140,7 @@ export default function TestimonialsAdmin() {
           </div>
           
           <form onSubmit={handleSave} className="flex flex-col gap-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                <div className="space-y-2">
                   <label className="block text-slate-700 font-bold">اسم الشخصية / الكاتب *</label>
                   <div className="relative">
@@ -163,16 +167,38 @@ export default function TestimonialsAdmin() {
                </div>
             </div>
 
-            <div className="space-y-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+               <div className="space-y-2">
+                  <label className="block text-slate-700 font-bold">موضوع الشهادة / المقال</label>
+                  <input 
+                    type="text"
+                    value={formData.title}
+                    onChange={(e) => setFormData({...formData, title: e.target.value})}
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3.5 focus:border-[#b18c39] focus:outline-none focus:ring-1 focus:ring-[#b18c39] font-bold"
+                    placeholder="مثال: شهادة في الموقف والمسيرة الوطنية"
+                  />
+               </div>
+               <div className="space-y-2">
+                  <label className="block text-slate-700 font-bold">تاريخ النشر</label>
+                  <input 
+                    type="date"
+                    value={formData.published_date}
+                    onChange={(e) => setFormData({...formData, published_date: e.target.value})}
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3.5 focus:border-[#b18c39] focus:outline-none focus:ring-1 focus:ring-[#b18c39] font-bold"
+                  />
+               </div>
+            </div>
+
+            <div className="space-y-2 z-10">
               <label className="block text-slate-700 font-bold">محتوى الشهادة / المقال *</label>
               <textarea 
                 required
-                rows={12}
                 value={formData.content}
                 onChange={(e) => setFormData({...formData, content: e.target.value})}
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl p-5 focus:border-[#b18c39] focus:outline-none focus:ring-1 focus:ring-[#b18c39] font-medium leading-relaxed"
+                rows={12}
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl p-6 focus:border-[#b18c39] focus:outline-none focus:ring-1 focus:ring-[#b18c39] font-medium resize-y text-slate-700 leading-relaxed"
                 placeholder="اكتب نص الشهادة أو المقال كاملاً هنا..."
-              />
+              ></textarea>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 bg-slate-50 p-6 rounded-2xl border border-slate-100">
@@ -235,7 +261,8 @@ export default function TestimonialsAdmin() {
                   <tr>
                     <th className="p-5 font-black text-center">ترتيب</th>
                     <th className="p-5 font-black">الشخصية</th>
-                    <th className="p-5 font-black">المحتوى</th>
+                    <th className="p-5 font-black">الموضوع</th>
+                    <th className="p-5 font-black text-center">التاريخ</th>
                     <th className="p-5 font-black text-center">الإجراءات</th>
                   </tr>
                 </thead>
@@ -260,8 +287,11 @@ export default function TestimonialsAdmin() {
                           </div>
                         </div>
                       </td>
-                      <td className="p-5 max-w-[300px] truncate font-medium text-slate-500">
-                        {item.content}
+                      <td className="p-5">
+                        <div className="font-bold text-slate-800 truncate max-w-[200px]">{item.title || 'بدون موضوع'}</div>
+                      </td>
+                      <td className="p-5 text-center font-medium text-slate-500">
+                        {item.published_date ? new Date(item.published_date).toLocaleDateString('ar-YE') : '---'}
                       </td>
                       <td className="p-5">
                         <div className="flex justify-center gap-3 opacity-50 group-hover:opacity-100 transition-opacity">

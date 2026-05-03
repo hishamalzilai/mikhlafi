@@ -59,14 +59,13 @@ export default function TestimonialsListClient({ testimonials }: TestimonialsLis
                    </div>
                    <div className="hidden sm:flex items-center gap-1.5 text-[10px] text-slate-400 font-bold uppercase tracking-widest border border-slate-100 px-3 py-1 rounded-full">
                       <Calendar className="w-3 h-3" />
-                      {formatDate(item.created_at)}
+                      {formatDate(item.published_date || item.created_at)}
                    </div>
                 </div>
                 
                 <div className="space-y-6 flex-1">
-                   {/* We simulate a title using the first few words or a generic one */}
                    <h3 className="text-2xl md:text-3xl font-black text-slate-900 leading-snug tracking-tight">
-                      شهادة في الموقف والمسيرة الوطنية
+                      {item.title || 'شهادة في الموقف والمسيرة الوطنية'}
                    </h3>
                    
                    <div className="text-slate-600 font-medium leading-[1.8] text-lg text-justify border-r-4 border-slate-100 pr-6">

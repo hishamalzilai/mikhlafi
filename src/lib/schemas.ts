@@ -20,11 +20,13 @@ export const newsSchema = z.object({
 
 export const testimonialSchema = z.object({
   id: z.string().optional(),
+  title: z.string().optional(),
   author_name: z.string().min(2, "Author name is required"),
   author_title: z.string().optional(),
   content: z.string().min(5, "Content is required"),
   author_image: z.string().nullable().optional(),
   order_index: z.coerce.number().default(0),
+  published_date: z.string().optional(),
 });
 
 export const mediaLibrarySchema = z.object({

@@ -16,6 +16,14 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'sup.hazlinkdata.cloud',
       },
+      {
+        protocol: 'https',
+        hostname: 'www.mofa-ye.org',
+      },
+      {
+        protocol: 'https',
+        hostname: 's0.wp.com',
+      },
     ],
   },
   experimental: {
