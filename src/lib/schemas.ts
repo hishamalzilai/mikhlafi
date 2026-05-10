@@ -76,3 +76,7 @@ export const brandingSchema = z.object({
   footer_logo_url: z.string().min(1, "رابط الشعار مطلوب"),
   footer_logo_scale: z.coerce.number().min(0.1).max(3.0).default(1.0),
 });
+
+export const aboutSchema = z.object({
+  text: z.string().min(10, "النص يجب أن يكون 10 أحرف على الأقل"),
+});

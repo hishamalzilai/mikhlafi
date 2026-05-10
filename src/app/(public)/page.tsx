@@ -201,7 +201,7 @@ export default async function Home() {
            </div>
            <div className="grid lg:grid-cols-2 gap-10">
               {/* Video Card */}
-              <div className="group relative overflow-hidden aspect-video bg-black border border-slate-800 shadow-2xl flex items-center justify-center">
+              <div className="group relative overflow-hidden min-h-[320px] md:aspect-video bg-black border border-slate-800 shadow-2xl flex items-center justify-center">
                  <Image 
                    src={latestVideo?.thumbnail_url || "https://images.unsplash.com/photo-1495020689067-958852a7765e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"} 
                    alt={latestVideo?.title || "فيديوجرافيك المواقف"} 
@@ -209,18 +209,18 @@ export default async function Home() {
                    sizes="(max-width: 1024px) 100vw, 600px"
                    className="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:opacity-60 transition-all duration-1000 group-hover:scale-110 grayscale group-hover:grayscale-0" 
                  />
-                 <div className="relative z-10 text-center flex flex-col items-center w-full p-8 translate-y-4 group-hover:translate-y-0 transition-all duration-500">
-                    <div className="w-20 h-20 bg-[#b18c39]/90 rounded-full flex items-center justify-center mb-6 shadow-2xl group-hover:scale-110 transition-all cursor-pointer">
-                       <Play className="text-white w-10 h-10 ml-1" />
+                 <div className="relative z-10 text-center flex flex-col items-center w-full p-6 md:p-8 translate-y-0 lg:translate-y-4 group-hover:translate-y-0 transition-all duration-500">
+                    <div className="w-16 h-16 md:w-20 md:h-20 bg-[#b18c39]/90 rounded-full flex items-center justify-center mb-4 md:mb-6 shadow-2xl group-hover:scale-110 transition-all cursor-pointer">
+                       <Play className="text-white w-8 h-8 md:w-10 md:h-10 ml-1" />
                     </div>
-                    <h4 className="font-black text-3xl text-white drop-shadow-md mb-2">فيديوجرافيك المواقف</h4>
-                    <p className="text-slate-300 font-bold text-sm mb-6 line-clamp-1 px-4">{latestVideo?.description || "توثيق مرئي لأهم الخطابات والمقابلات والمحطات السيادية"}</p>
-                    <Link href="/library" className="bg-[#b18c39] text-white px-8 py-3 rounded-none font-black text-xs hover:bg-white hover:text-slate-900 transition-all flex items-center gap-2 shadow-xl opacity-0 group-hover:opacity-100">استعرض الفيديوهات <ArrowLeft size={14}/></Link>
+                    <h4 className="font-black text-2xl md:text-3xl text-white drop-shadow-md mb-2">فيديوجرافيك المواقف</h4>
+                    <p className="text-slate-300 font-bold text-xs md:text-sm mb-6 line-clamp-2 md:line-clamp-1 px-2 md:px-4">{latestVideo?.description || "توثيق مرئي لأهم الخطابات والمقابلات والمحطات السيادية"}</p>
+                    <Link href="/library" className="bg-[#b18c39] text-white px-6 py-2.5 md:px-8 md:py-3 rounded-none font-black text-xs hover:bg-white hover:text-slate-900 transition-all flex items-center gap-2 shadow-xl opacity-100 lg:opacity-0 group-hover:opacity-100">استعرض الفيديوهات <ArrowLeft size={14}/></Link>
                  </div>
               </div>
               
               {/* Photo Card */}
-              <div className="group relative overflow-hidden aspect-video bg-black border border-slate-800 shadow-2xl flex items-center justify-center">
+              <div className="group relative overflow-hidden min-h-[320px] md:aspect-video bg-black border border-slate-800 shadow-2xl flex items-center justify-center">
                  <Image 
                    src={latestPhoto?.thumbnail_url || "https://images.unsplash.com/photo-1577900236166-50e50942d962?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"} 
                    alt={latestPhoto?.title || "معرض الصور الوطنية"} 
@@ -228,13 +228,13 @@ export default async function Home() {
                    sizes="(max-width: 1024px) 100vw, 600px"
                    className="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:opacity-60 transition-all duration-1000 group-hover:scale-110 grayscale group-hover:grayscale-0" 
                  />
-                 <div className="relative z-10 text-center flex flex-col items-center w-full p-8 translate-y-4 group-hover:translate-y-0 transition-all duration-500">
-                    <div className="w-20 h-20 bg-slate-800/90 rounded-full border border-slate-700 flex items-center justify-center mb-6 shadow-2xl group-hover:bg-[#b18c39] group-hover:border-[#b18c39] transition-all cursor-pointer">
-                       <Users className="text-white w-10 h-10" />
+                 <div className="relative z-10 text-center flex flex-col items-center w-full p-6 md:p-8 translate-y-0 lg:translate-y-4 group-hover:translate-y-0 transition-all duration-500">
+                    <div className="w-16 h-16 md:w-20 md:h-20 bg-slate-800/90 rounded-full border border-slate-700 flex items-center justify-center mb-4 md:mb-6 shadow-2xl group-hover:bg-[#b18c39] group-hover:border-[#b18c39] transition-all cursor-pointer">
+                       <Users className="text-white w-8 h-8 md:w-10 md:h-10" />
                     </div>
-                    <h4 className="font-black text-3xl text-white drop-shadow-md mb-2">معرض الصور الوطنية</h4>
-                    <p className="text-slate-300 font-bold text-sm mb-6 line-clamp-1 px-4">{latestPhoto?.description || "لقطات توثيقية ترصد النشاط الدبلوماسي والمشاركات الدولية"}</p>
-                    <Link href="/library" className="bg-[#b18c39] text-white px-8 py-3 rounded-none font-black text-xs hover:bg-white hover:text-slate-900 transition-all flex items-center gap-2 shadow-xl opacity-0 group-hover:opacity-100">استعرض الصور <ArrowLeft size={14}/></Link>
+                    <h4 className="font-black text-2xl md:text-3xl text-white drop-shadow-md mb-2">معرض الصور الوطنية</h4>
+                    <p className="text-slate-300 font-bold text-xs md:text-sm mb-6 line-clamp-2 md:line-clamp-1 px-2 md:px-4">{latestPhoto?.description || "لقطات توثيقية ترصد النشاط الدبلوماسي والمشاركات الدولية"}</p>
+                    <Link href="/library" className="bg-[#b18c39] text-white px-6 py-2.5 md:px-8 md:py-3 rounded-none font-black text-xs hover:bg-white hover:text-slate-900 transition-all flex items-center gap-2 shadow-xl opacity-100 lg:opacity-0 group-hover:opacity-100">استعرض الصور <ArrowLeft size={14}/></Link>
                  </div>
               </div>
            </div>

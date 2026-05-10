@@ -70,14 +70,17 @@ export default async function RootLayout({
 }) {
   const branding = await getBrandingSettings();
 
+  // Sanitize branding values to prevent XSS via style injection
+  const headerScale = Math.min(Math.max(Number(branding.header_logo_scale) || 1.0, 0.1), 3.0);
+  const footerScale = Math.min(Math.max(Number(branding.footer_logo_scale) || 1.0, 0.1), 3.0);
+
   return (
     <html lang="ar" dir="rtl">
       <body className="min-h-screen selection:bg-amber-100 selection:text-amber-900 bg-[#fafaf9] text-[#1c1917]">
-        {/* We can inject branding as a CSS variable or pass to a context provider if needed */}
         <style dangerouslySetInnerHTML={{ __html: `
           :root {
-            --header-logo-scale: ${branding.header_logo_scale};
-            --footer-logo-scale: ${branding.footer_logo_scale};
+            --header-logo-scale: ${headerScale};
+            --footer-logo-scale: ${footerScale};
           }
         `}} />
         {children}

@@ -7,6 +7,7 @@ export type NavItem = {
 export const MASTER_NAVIGATION: NavItem[] = [
   { id: 'home', path: '/', title: 'الرئيسية' },
   { id: 'bio', path: '/bio', title: 'السيرة والمحطات' },
+  { id: 'about', path: '/about', title: 'من نحن' },
   { id: 'vision', path: '/vision', title: 'دراسات وأبحاث' },
   { id: 'news', path: '/news', title: 'أخبار وآراء' },
   { id: 'articles', path: '/articles', title: 'مقالات' },
