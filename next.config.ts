@@ -1,5 +1,9 @@
 import type { NextConfig } from "next";
 
+// Extract hostname from Supabase URL env variable (available at build time)
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+const supabaseHostname = supabaseUrl ? new URL(supabaseUrl).hostname : '';
+
 const nextConfig: NextConfig = {
   compress: true,
   images: {
@@ -12,10 +16,10 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'images.unsplash.com',
       },
-      {
-        protocol: 'https',
-        hostname: 'sup.hazlinkdata.cloud',
-      },
+      ...(supabaseHostname ? [{
+        protocol: 'https' as const,
+        hostname: supabaseHostname,
+      }] : []),
       {
         protocol: 'https',
         hostname: 'www.mofa-ye.org',
@@ -71,9 +75,9 @@ const nextConfig: NextConfig = {
               "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' https://fonts.gstatic.com",
-              "img-src 'self' data: blob: https://images.unsplash.com https://sup.hazlinkdata.cloud https://www.mofa-ye.org https://s0.wp.com",
-              "media-src 'self' blob: https://sup.hazlinkdata.cloud",
-              "connect-src 'self' https://sup.hazlinkdata.cloud",
+              `img-src 'self' data: blob: https://images.unsplash.com ${supabaseUrl} https://www.mofa-ye.org https://s0.wp.com`,
+              `media-src 'self' blob: ${supabaseUrl}`,
+              `connect-src 'self' ${supabaseUrl}`,
               "frame-ancestors 'none'",
               "base-uri 'self'",
               "form-action 'self'",
