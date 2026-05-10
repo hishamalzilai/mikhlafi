@@ -73,3 +73,6 @@ next-env.d.ts
 # local backups
 *.bak
 *~
+
+# scratch scripts
+scratch/
