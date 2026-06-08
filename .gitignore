@@ -43,6 +43,10 @@ next-env.d.ts
 # antigravity & temporary
 .gemini/
 .antigravity/
+AGENTS.md
+CLAUDE.md
+.cursorrules
+.cursor/
 *.mjs
 *.sql
 *.json
