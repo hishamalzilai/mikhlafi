@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { getStudiesAction, saveStudyAction, deleteStudyAction } from '../vision-actions';
-import { Loader2, Plus, Trash2, Edit, CheckCircle2, BookOpen, UserRound, Tag } from 'lucide-react';
+import { Loader2, Plus, Trash2, Edit, CheckCircle2, BookOpen, UserRound, Tag, Search } from 'lucide-react';
 
 const STUDY_CATEGORIES = ['ورقة عمل', 'دراسة', 'بحث', 'تحليل سياسي', 'رؤية استراتيجية'];
 
@@ -10,6 +10,7 @@ export default function AdminStudiesPage() {
   const [studies, setStudies] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState('');
   const ITEMS_PER_PAGE = 10;
   
   // Form states
@@ -103,8 +104,12 @@ export default function AdminStudiesPage() {
     }
   };
 
-  const totalPages = Math.max(1, Math.ceil(studies.length / ITEMS_PER_PAGE));
-  const paginatedStudies = studies.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
+  const filteredStudies = studies.filter(s => 
+    (s.title?.toLowerCase().includes(searchTerm.toLowerCase()) || false) || 
+    (s.author?.toLowerCase().includes(searchTerm.toLowerCase()) || false)
+  );
+  const totalPages = Math.max(1, Math.ceil(filteredStudies.length / ITEMS_PER_PAGE));
+  const paginatedStudies = filteredStudies.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
 
   return (
     <div className="animate-in fade-in duration-500">
@@ -115,12 +120,24 @@ export default function AdminStudiesPage() {
           </div>
           
           {!isAdding && (
-             <button 
-                onClick={() => setIsAdding(true)}
-                className="bg-[#b18c39] hover:bg-[#9a7930] text-white px-6 py-3 rounded-xl font-bold transition-all shadow-md flex items-center gap-2 w-full sm:w-auto justify-center"
-             >
-                <Plus className="w-5 h-5" /> إضافة دراسة جديدة
-             </button>
+             <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
+                <div className="relative w-full sm:w-64">
+                   <Search className="w-5 h-5 absolute top-3 right-3 text-slate-400" />
+                   <input 
+                     type="text" 
+                     placeholder="البحث في الدراسات..." 
+                     value={searchTerm}
+                     onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }}
+                     className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 pr-10 pl-4 focus:border-[#b18c39] focus:outline-none focus:ring-1 focus:ring-[#b18c39] font-medium text-sm"
+                   />
+                </div>
+                <button 
+                   onClick={() => setIsAdding(true)}
+                   className="bg-[#b18c39] hover:bg-[#9a7930] text-white px-6 py-3 rounded-xl font-bold transition-all shadow-md flex items-center gap-2 w-full sm:w-auto justify-center whitespace-nowrap"
+                >
+                   <Plus className="w-5 h-5" /> إضافة دراسة جديدة
+                </button>
+             </div>
           )}
        </div>
 

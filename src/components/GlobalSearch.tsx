@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { Search, X, Loader2, Newspaper, FileText, BookOpen, Film, FolderArchive, ArrowLeft } from 'lucide-react';
+import { Search, X, Loader2, Newspaper, FileText, BookOpen, Film, FolderArchive, ArrowLeft, Quote } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { searchAll, SearchResult } from '@/lib/search';
@@ -101,6 +101,7 @@ export default function GlobalSearch({ isOpen, onClose }: GlobalSearchProps) {
       case 'study': return <BookOpen className="w-4 h-4" />;
       case 'archive': return <FolderArchive className="w-4 h-4" />;
       case 'media': return <Film className="w-4 h-4" />;
+      case 'testimonial': return <Quote className="w-4 h-4" />;
       default: return <FileText className="w-4 h-4" />;
     }
   };
@@ -112,6 +113,7 @@ export default function GlobalSearch({ isOpen, onClose }: GlobalSearchProps) {
       case 'study': return 'دراسة';
       case 'archive': return 'أرشيف';
       case 'media': return 'مكتبة مرئية';
+      case 'testimonial': return 'شهادة / رأي';
       default: return 'وثيقة';
     }
   };
@@ -198,6 +200,7 @@ export default function GlobalSearch({ isOpen, onClose }: GlobalSearchProps) {
                               result.type === 'article' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' :
                               result.type === 'study' ? 'bg-purple-500/10 text-purple-400 border-purple-500/20' :
                               result.type === 'archive' ? 'bg-[#b18c39]/10 text-[#b18c39] border-[#b18c39]/20' :
+                              result.type === 'testimonial' ? 'bg-amber-500/10 text-amber-400 border-amber-500/20' :
                               'bg-rose-500/10 text-rose-400 border-rose-500/20'
                            }`}>
                               {getTypeIcon(result.type)}

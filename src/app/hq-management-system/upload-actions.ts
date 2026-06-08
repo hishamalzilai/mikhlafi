@@ -13,6 +13,9 @@ const ALLOWED_TYPES: Record<string, string[]> = {
 const ALLOWED_EXTENSIONS = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'svg', 'mp4', 'webm', 'ogg', 'mov', 'pdf', 'doc', 'docx'];
 const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20MB
 
+// Allowed storage bucket names
+const ALLOWED_BUCKETS = ['media', 'archive-media'];
+
 function sanitizeFileName(name: string): string {
   // Remove path traversal attempts and dangerous characters
   return name
@@ -31,6 +34,11 @@ export async function uploadMediaAction(formData: FormData) {
     const bucket = formData.get('bucket') as string || 'media';
 
     if (!file) throw new Error("No file uploaded");
+
+    // Validate bucket name against allowlist
+    if (!ALLOWED_BUCKETS.includes(bucket)) {
+      return { success: false, error: `Bucket غير مسموح: ${bucket}` };
+    }
 
     // Validate file size
     if (file.size > MAX_FILE_SIZE) {

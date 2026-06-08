@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowLeft, Shield, Newspaper, Play, Globe, Users, Scale, Archive, BookOpen, Quote, FileText } from 'lucide-react';
+import { ArrowLeft, Shield, Newspaper, Play, Globe, Users, Scale, Archive, BookOpen, Quote, FileText, UserRound } from 'lucide-react';
 import { getHomepageSettings } from '@/app/hq-management-system/home-actions';
 import { supabaseAdmin } from '@/lib/supabase-admin';
 
@@ -40,6 +40,14 @@ export default async function Home() {
     .from('news')
     .select('*')
     .order('published_date', { ascending: false })
+    .limit(3);
+
+  // Fetch latest 3 testimonials
+  const { data: latestTestimonials } = await supabaseAdmin
+    .from('testimonials')
+    .select('*')
+    .order('order_index', { ascending: true })
+    .order('created_at', { ascending: false })
     .limit(3);
 
   // Fallback defaults in case no data yet
@@ -240,7 +248,59 @@ export default async function Home() {
            </div>
         </section>
 
-        {/* 6. سكشن خزانة الوثائق (Featured Archive) */}
+        {/* 6. سجل الموقف والمسيرة (Testimonials & Opinions) */}
+        <section className="space-y-10 px-4 md:px-0">
+           <div className="flex flex-col md:flex-row justify-between items-start md:items-end border-b-4 border-slate-200 pb-5 gap-4 md:gap-0">
+              <h3 className="text-2xl md:text-4xl font-black text-slate-900 flex items-center gap-3">
+                <Quote className="text-[#b18c39] w-10 h-10 shrink-0" />
+                شهادات وآراء
+              </h3>
+              <Link href="/testimonials" className="text-xs font-black text-slate-500 hover:text-slate-900 transition-colors uppercase tracking-widest mt-2 md:mt-0">سجل الشهادات الكامل</Link>
+           </div>
+           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+             {latestTestimonials?.map((item) => (
+               <div key={item.id} className="bg-slate-50 p-8 border border-slate-200 shadow-sm hover:shadow-xl transition-all duration-300 relative group flex flex-col h-full">
+                 <Quote className="absolute top-4 left-4 text-slate-200 w-12 h-12 opacity-50 group-hover:text-[#b18c39]/10 transition-colors" />
+                 <div className="flex items-center gap-4 mb-6 relative z-10">
+                   <div className="w-14 h-14 bg-white rounded-full overflow-hidden border-2 border-[#b18c39] shadow-md shrink-0">
+                     {item.author_image ? (
+                       <img src={item.author_image} alt={item.author_name} className="w-full h-full object-cover" />
+                     ) : (
+                       <div className="w-full h-full flex items-center justify-center text-slate-300 bg-slate-100">
+                         <UserRound size={24} />
+                       </div>
+                     )}
+                   </div>
+                   <div>
+                     <h4 className="font-black text-slate-900 leading-tight">{item.author_name}</h4>
+                     <p className="text-[#b18c39] font-bold text-xs mt-1">{item.author_title || 'كاتب ومفكر'}</p>
+                   </div>
+                 </div>
+                 <div className="flex-1 relative z-10">
+                   <h5 className="font-bold text-lg mb-3 line-clamp-1">{item.title}</h5>
+                   <p className="text-slate-600 font-medium text-sm leading-relaxed line-clamp-4">
+                     {item.content}
+                   </p>
+                 </div>
+                 <div className="mt-6 pt-4 border-t border-slate-200 flex justify-between items-center relative z-10">
+                   <span className="text-xs font-bold text-slate-400">
+                     {item.published_date ? new Date(item.published_date).toLocaleDateString('ar-YE') : '---'}
+                   </span>
+                   <Link href={`/testimonials/${item.id}`} className="text-xs font-black text-[#b18c39] flex items-center gap-2 hover:gap-4 transition-all">
+                     اقرأ الشهادة <ArrowLeft size={14}/>
+                   </Link>
+                 </div>
+               </div>
+             ))}
+             {(!latestTestimonials || latestTestimonials.length === 0) && (
+               <div className="col-span-full py-12 text-center border-2 border-dashed border-slate-200 rounded-3xl">
+                  <p className="text-slate-400 font-bold italic">جاري تحديث الشهادات والآراء...</p>
+               </div>
+             )}
+           </div>
+        </section>
+
+        {/* 7. سكشن خزانة الوثائق (Featured Archive) */}
         <section className="border-t-8 border-[#b18c39] bg-white p-12 md:p-20 shadow-xl relative text-center overflow-hidden">
            <Archive className="text-slate-50 w-[30rem] h-[30rem] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-80 rotate-12" />
            <div className="relative z-10 flex flex-col items-center max-w-3xl mx-auto space-y-8">

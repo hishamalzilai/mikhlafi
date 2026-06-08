@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef } from 'react';
 import { uploadFile, formatSize, type UploadProgress } from '@/lib/upload';
-import { Loader2, Plus, Trash2, Edit, CheckCircle2, Archive, Image as ImageIcon, FileText, Video, Calendar, Eye, Link2, Tag, Upload, X, ExternalLink, CloudUpload, Zap } from 'lucide-react';
+import { Loader2, Plus, Trash2, Edit, CheckCircle2, Archive, Image as ImageIcon, FileText, Video, Calendar, Eye, Link2, Tag, Upload, X, ExternalLink, CloudUpload, Zap, Search } from 'lucide-react';
 import { getArchiveItemsAction, saveArchiveItemAction, deleteArchiveItemAction } from '../archive-actions';
 
 const ARCHIVE_TYPES = [
@@ -17,6 +17,7 @@ export default function AdminArchivePage() {
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [filterType, setFilterType] = useState<string>('all');
+  const [searchTerm, setSearchTerm] = useState('');
   const ITEMS_PER_PAGE = 10;
 
   // Form states
@@ -154,7 +155,10 @@ export default function AdminArchivePage() {
     }
   };
 
-  const filteredItems = filterType === 'all' ? items : items.filter(i => i.type === filterType);
+  const baseFilteredItems = filterType === 'all' ? items : items.filter(i => i.type === filterType);
+  const filteredItems = baseFilteredItems.filter(i => 
+    i.title?.toLowerCase().includes(searchTerm.toLowerCase()) || false
+  );
   const totalPages = Math.max(1, Math.ceil(filteredItems.length / ITEMS_PER_PAGE));
   const paginatedItems = filteredItems.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
   const getTypeInfo = (t: string) => ARCHIVE_TYPES.find(at => at.id === t) || ARCHIVE_TYPES[0];
@@ -202,9 +206,21 @@ export default function AdminArchivePage() {
           <p className="text-slate-500 font-medium mt-1">إضافة وتنظيم الصور التاريخية، الوثائق الرسمية، والتسجيلات المرئية.</p>
         </div>
         {!isAdding && (
-          <button onClick={() => setIsAdding(true)} className="bg-[#b18c39] hover:bg-[#9a7930] text-white px-6 py-3 rounded-xl font-bold transition-all shadow-md flex items-center gap-2 w-full sm:w-auto justify-center">
-            <Plus className="w-5 h-5" /> إضافة مادة جديدة
-          </button>
+           <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
+              <div className="relative w-full sm:w-64">
+                 <Search className="w-5 h-5 absolute top-3 right-3 text-slate-400" />
+                 <input 
+                   type="text" 
+                   placeholder="البحث في الأرشيف..." 
+                   value={searchTerm}
+                   onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }}
+                   className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 pr-10 pl-4 focus:border-[#b18c39] focus:outline-none focus:ring-1 focus:ring-[#b18c39] font-medium text-sm"
+                 />
+              </div>
+              <button onClick={() => setIsAdding(true)} className="bg-[#b18c39] hover:bg-[#9a7930] text-white px-6 py-3 rounded-xl font-bold transition-all shadow-md flex items-center gap-2 w-full sm:w-auto justify-center whitespace-nowrap">
+                <Plus className="w-5 h-5" /> إضافة مادة جديدة
+              </button>
+           </div>
         )}
       </div>
 

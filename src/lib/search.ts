@@ -5,7 +5,7 @@ import { supabase } from '@/lib/supabase';
 // Define unified search result type
 export type SearchResult = {
   id: string;
-  type: 'news' | 'article' | 'study' | 'archive' | 'media';
+  type: 'news' | 'article' | 'study' | 'archive' | 'media' | 'testimonial';
   title: string;
   excerpt: string;
   date: string;
@@ -15,19 +15,44 @@ export type SearchResult = {
 export async function searchAll(query: string): Promise<SearchResult[]> {
   if (!query || query.trim().length < 3) return [];
   
-  const { data, error } = await supabase.rpc('search_all', { query_text: query.trim() });
+  const trimmedQuery = query.trim();
+  const searchPattern = `%${trimmedQuery}%`;
 
-  if (error) {
-    console.error("Search RPC error:", error);
-    return [];
+  const [rpcResult, testimonialsResult] = await Promise.all([
+    supabase.rpc('search_all', { query_text: trimmedQuery }),
+    supabase
+      .from('testimonials')
+      .select('id, title, content, published_date, author_name')
+      .or(`title.ilike.${searchPattern},content.ilike.${searchPattern},author_name.ilike.${searchPattern}`)
+      .limit(10)
+  ]);
+
+  let results: SearchResult[] = [];
+
+  if (!rpcResult.error && rpcResult.data) {
+    results = rpcResult.data.map((item: any) => ({
+      id: item.id,
+      type: item.type,
+      title: item.title,
+      excerpt: item.excerpt || '',
+      date: item.date_val ? new Date(item.date_val).toLocaleDateString('ar-YE', { year: 'numeric', month: 'long', day: 'numeric' }) : '',
+      url: item.url_val
+    }));
+  } else if (rpcResult.error) {
+    console.error("Search RPC error:", rpcResult.error);
   }
 
-  return (data || []).map((item: any) => ({
-    id: item.id,
-    type: item.type,
-    title: item.title,
-    excerpt: item.excerpt || '',
-    date: item.date_val ? new Date(item.date_val).toLocaleDateString('ar-YE', { year: 'numeric', month: 'long', day: 'numeric' }) : '',
-    url: item.url_val
-  }));
+  if (!testimonialsResult.error && testimonialsResult.data) {
+    const testimonialItems = testimonialsResult.data.map((item: any) => ({
+      id: item.id,
+      type: 'testimonial' as const,
+      title: item.title || item.author_name || 'شهادة / مقال',
+      excerpt: item.content ? (item.content.length > 100 ? item.content.substring(0, 100) + '...' : item.content) : '',
+      date: item.published_date ? new Date(item.published_date).toLocaleDateString('ar-YE', { year: 'numeric', month: 'long', day: 'numeric' }) : '',
+      url: `/testimonials/${item.id}`
+    }));
+    results = [...results, ...testimonialItems];
+  }
+
+  return results;
 }

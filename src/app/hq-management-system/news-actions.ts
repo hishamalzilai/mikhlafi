@@ -17,7 +17,7 @@ export async function getNewsAction() {
     if (error) throw error;
     return { success: true, data };
   } catch (err: any) {
-    console.error("[NewsAction] fetch error:", err);
+    console.error("[NewsAction] fetch error");
     return { success: false, error: err.message };
   }
 }
@@ -34,13 +34,10 @@ export async function saveNewsAction(formData: FormData) {
     const publishedDate = formData.get('published_date') as string;
     const imageFile = formData.get('image') as File | null;
 
-    console.log(`[NewsAction] Starting save: id=${id}, title=${title}`);
-    
     let image_url = formData.get('existing_image_url') as string || '';
 
     // Handle image upload
     if (imageFile && imageFile.size > 0 && imageFile.name !== 'undefined') {
-      console.log(`[NewsAction] Preparing image upload: ${imageFile.name} (${imageFile.size} bytes)`);
       const fileExt = imageFile.name.split('.').pop() || 'png';
       const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
       const filePath = `news/${fileName}`;
@@ -56,7 +53,6 @@ export async function saveNewsAction(formData: FormData) {
           });
           
         if (uploadError) {
-          console.error("[NewsAction] Storage upload error:", uploadError);
           throw new Error("فشل رفع الصورة: " + uploadError.message);
         }
         
@@ -65,9 +61,8 @@ export async function saveNewsAction(formData: FormData) {
           .getPublicUrl(filePath);
           
         image_url = publicUrlData.publicUrl;
-        console.log(`[NewsAction] Image URL generated: ${image_url}`);
       } catch (uploadErr: any) {
-        console.error("[NewsAction] Fatal upload error:", uploadErr);
+        console.error("[NewsAction] upload error");
         throw uploadErr;
       }
     }
@@ -84,27 +79,24 @@ export async function saveNewsAction(formData: FormData) {
     newsSchema.parse(newsData);
 
     if (id && id !== "null" && id !== "undefined") {
-      console.log(`[NewsAction] Updating news entry: ${id}`);
       const { error } = await supabaseAdmin
         .from('news')
         .update(newsData)
         .eq('id', id);
       if (error) throw error;
     } else {
-      console.log("[NewsAction] Inserting new news entry");
       const { error } = await supabaseAdmin
         .from('news')
         .insert([newsData]);
       if (error) throw error;
     }
 
-    console.log("[NewsAction] Operation successful. Revalidating...");
     revalidatePath('/news');
     revalidatePath('/hq-management-system/news');
     
     return { success: true };
   } catch (err: any) {
-    console.error("[NewsAction] Global Error:", err);
+    console.error("[NewsAction] save error");
     return { success: false, error: err.message || "حدث خطأ غير متوقع" };
   }
 }
@@ -114,7 +106,6 @@ export async function deleteNewsAction(id: number) {
   if (!isAdmin) return { success: false, error: 'Unauthorized' };
 
   try {
-    console.log(`[NewsAction] Deleting entry: ${id}`);
     const { error } = await supabaseAdmin.from('news').delete().eq('id', id);
     if (error) throw error;
     
@@ -122,7 +113,8 @@ export async function deleteNewsAction(id: number) {
     revalidatePath('/hq-management-system/news');
     return { success: true };
   } catch (err: any) {
-    console.error("[NewsAction] Delete Error:", err);
+    console.error("[NewsAction] delete error");
     return { success: false, error: err.message };
   }
 }
+
