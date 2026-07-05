@@ -299,13 +299,15 @@ export default function LibraryManagement() {
                    <div key={item.id} className="bg-white rounded-3xl overflow-hidden border border-slate-200 shadow-sm hover:shadow-xl transition-all group relative">
                       <div className="aspect-video relative overflow-hidden bg-slate-100">
                          <img 
-                           src={item.thumbnail_url} 
+                           src={item.thumbnail_url || (item.type === 'video' ? '/default-video-cover.png' : '')} 
                            onError={(e) => {
                              const target = e.target as HTMLImageElement;
                              if (target.src.includes('maxresdefault.jpg')) {
                                target.src = target.src.replace('maxresdefault.jpg', 'hqdefault.jpg');
                              } else if (target.src.includes('hqdefault.jpg')) {
                                target.src = target.src.replace('hqdefault.jpg', '0.jpg');
+                             } else if (item.type === 'video' && !target.src.includes('/default-video-cover.png')) {
+                               target.src = '/default-video-cover.png';
                              }
                            }}
                            className="w-full h-full object-cover group-hover:scale-105 transition-all duration-700" 

@@ -10,17 +10,19 @@ interface LibraryListClientProps {
 }
 
 function MediaCard({ item, index, onSelect }: { item: any; index: number; onSelect: () => void }) {
-  const [imgSrc, setImgSrc] = useState(item.thumbnail_url || '');
+  const [imgSrc, setImgSrc] = useState(item.thumbnail_url || (item.type === 'video' ? '/default-video-cover.png' : ''));
 
   useEffect(() => {
-    setImgSrc(item.thumbnail_url || '');
-  }, [item.thumbnail_url]);
+    setImgSrc(item.thumbnail_url || (item.type === 'video' ? '/default-video-cover.png' : ''));
+  }, [item.thumbnail_url, item.type]);
 
   const handleImageError = () => {
     if (imgSrc.includes('maxresdefault.jpg')) {
       setImgSrc(imgSrc.replace('maxresdefault.jpg', 'hqdefault.jpg'));
     } else if (imgSrc.includes('hqdefault.jpg')) {
       setImgSrc(imgSrc.replace('hqdefault.jpg', '0.jpg'));
+    } else if (item.type === 'video' && imgSrc !== '/default-video-cover.png') {
+      setImgSrc('/default-video-cover.png');
     }
   };
 
