@@ -9,6 +9,67 @@ interface LibraryListClientProps {
   mediaList: any[];
 }
 
+function MediaCard({ item, index, onSelect }: { item: any; index: number; onSelect: () => void }) {
+  const [imgSrc, setImgSrc] = useState(item.thumbnail_url || '');
+
+  useEffect(() => {
+    setImgSrc(item.thumbnail_url || '');
+  }, [item.thumbnail_url]);
+
+  const handleImageError = () => {
+    if (imgSrc.includes('maxresdefault.jpg')) {
+      setImgSrc(imgSrc.replace('maxresdefault.jpg', 'hqdefault.jpg'));
+    } else if (imgSrc.includes('hqdefault.jpg')) {
+      setImgSrc(imgSrc.replace('hqdefault.jpg', '0.jpg'));
+    }
+  };
+
+  return (
+    <div 
+      onClick={onSelect}
+      className="relative cursor-pointer group break-inside-avoid animate-in fade-in overflow-hidden border border-slate-800 shadow-xl"
+      style={{ animationFillMode: 'both', animationDelay: `${index * 100}ms` }}
+    >
+      <div className="relative aspect-[4/3] w-full overflow-hidden bg-slate-900">
+         <Image 
+           src={imgSrc || '/icon.png'} 
+           alt={item.title || 'مادة مرئية'} 
+           fill
+           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+           priority={index < 4}
+           onError={handleImageError}
+           className="object-cover opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700" 
+         />
+      </div>
+      <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/40 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-500"></div>
+      
+      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-500">
+         <div className="bg-[#b18c39]/90 backdrop-blur-md p-4 rounded-full scale-50 group-hover:scale-100 transition-transform duration-500 drop-shadow-[0_0_20px_rgba(177,140,57,0.6)] text-white">
+            {item.type === 'video' ? <Play className="w-8 h-8 ml-1" /> : <Expand className="w-8 h-8" />}
+         </div>
+      </div>
+
+      <div className="absolute top-4 right-4 z-10 flex gap-2">
+         <span className="bg-slate-900/80 backdrop-blur-md text-[#b18c39] border border-[#b18c39]/30 text-[10px] font-black px-3 py-1 uppercase tracking-widest rounded-full shadow-lg">
+           {item.type === 'video' ? 'مقطع مرئي' : 'صورة'}
+         </span>
+      </div>
+      
+      <div className="absolute bottom-0 left-0 right-0 p-5 z-20">
+         <div className="flex items-center gap-4 text-slate-300 text-xs font-bold">
+            {item.type === 'video' && item.duration && (
+               <span className="flex items-center gap-1.5 bg-black/40 px-2.5 py-1 rounded-md backdrop-blur-sm border border-white/10">
+                  <Clock className="w-3.5 h-3.5 text-[#b18c39]" />
+                  {item.duration}
+               </span>
+            )}
+            {item.description && <span className="line-clamp-1 opacity-80">{item.description}</span>}
+         </div>
+      </div>
+    </div>
+  );
+}
+
 export default function LibraryListClient({ mediaList }: LibraryListClientProps) {
   const [activeFilter, setActiveFilter] = useState<'all' | 'video' | 'photo'>('all');
   const [currentPage, setCurrentPage] = useState(1);
@@ -61,49 +122,12 @@ export default function LibraryListClient({ mediaList }: LibraryListClientProps)
        {/* Media Grid */}
        <div className="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6">
           {paginatedItems.map((item, index) => (
-             <div 
-               key={item.id}
-               onClick={() => setSelectedPhoto({ url: item.thumbnail_url, title: item.title, desc: item.description })}
-               className="relative cursor-pointer group break-inside-avoid animate-in fade-in overflow-hidden border border-slate-800 shadow-xl"
-               style={{ animationFillMode: 'both', animationDelay: `${index * 100}ms` }}
-             >
-               <div className="relative aspect-[4/3] w-full overflow-hidden">
-                  <Image 
-                    src={item.thumbnail_url} 
-                    alt={item.title} 
-                    fill
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                    priority={index < 4}
-                    className="object-cover opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700" 
-                  />
-               </div>
-               <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/40 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-500"></div>
-               
-               <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-500">
-                  <div className="bg-[#b18c39]/90 backdrop-blur-md p-4 rounded-full scale-50 group-hover:scale-100 transition-transform duration-500 drop-shadow-[0_0_20px_rgba(177,140,57,0.6)] text-white">
-                     {item.type === 'video' ? <Play className="w-8 h-8 ml-1" /> : <Expand className="w-8 h-8" />}
-                  </div>
-               </div>
-
-               <div className="absolute top-4 right-4 z-10 flex gap-2">
-                  <span className="bg-slate-900/80 backdrop-blur-md text-[#b18c39] border border-[#b18c39]/30 text-[10px] font-black px-3 py-1 uppercase tracking-widest rounded-full shadow-lg">
-                    {item.type === 'video' ? 'مقطع مرئي' : 'صورة'}
-                  </span>
-               </div>
-               
-               <div className="absolute bottom-0 left-0 right-0 p-5 z-20">
-                  {/* Title removed as requested */}
-                  <div className="flex items-center gap-4 text-slate-300 text-xs font-bold">
-                     {item.type === 'video' && item.duration && (
-                        <span className="flex items-center gap-1.5 bg-black/40 px-2.5 py-1 rounded-md backdrop-blur-sm border border-white/10">
-                           <Clock className="w-3.5 h-3.5 text-[#b18c39]" />
-                           {item.duration}
-                        </span>
-                     )}
-                     {item.description && <span className="line-clamp-1 opacity-80">{item.description}</span>}
-                  </div>
-               </div>
-             </div>
+             <MediaCard 
+               key={item.id} 
+               item={item} 
+               index={index} 
+               onSelect={() => setSelectedPhoto({ url: item.thumbnail_url, title: item.title, desc: item.description })} 
+             />
           ))}
        </div>
        

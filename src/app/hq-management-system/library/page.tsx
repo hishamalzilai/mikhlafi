@@ -298,7 +298,19 @@ export default function LibraryManagement() {
                 {paginatedItems.map(item => (
                    <div key={item.id} className="bg-white rounded-3xl overflow-hidden border border-slate-200 shadow-sm hover:shadow-xl transition-all group relative">
                       <div className="aspect-video relative overflow-hidden bg-slate-100">
-                         <img src={item.thumbnail_url} className="w-full h-full object-cover group-hover:scale-105 transition-all duration-700" alt={item.title} />
+                         <img 
+                           src={item.thumbnail_url} 
+                           onError={(e) => {
+                             const target = e.target as HTMLImageElement;
+                             if (target.src.includes('maxresdefault.jpg')) {
+                               target.src = target.src.replace('maxresdefault.jpg', 'hqdefault.jpg');
+                             } else if (target.src.includes('hqdefault.jpg')) {
+                               target.src = target.src.replace('hqdefault.jpg', '0.jpg');
+                             }
+                           }}
+                           className="w-full h-full object-cover group-hover:scale-105 transition-all duration-700" 
+                           alt={item.title} 
+                         />
                          {item.type === 'video' && (
                            <div className="absolute inset-0 flex items-center justify-center bg-black/20">
                              <Play className="w-12 h-12 text-white drop-shadow-lg" />

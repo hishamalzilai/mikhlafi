@@ -28,6 +28,22 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 's0.wp.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'img.youtube.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'i.ytimg.com',
+      },
+      {
+        protocol: 'https',
+        hostname: '*.ytimg.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'yt3.ggpht.com',
+      },
     ],
   },
   experimental: {
@@ -75,8 +91,8 @@ const nextConfig: NextConfig = {
               "script-src 'self' 'unsafe-inline'",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' https://fonts.gstatic.com",
-              `img-src 'self' data: blob: https://images.unsplash.com ${supabaseUrl} https://www.mofa-ye.org https://s0.wp.com`,
-              `media-src 'self' blob: ${supabaseUrl}`,
+              `img-src 'self' data: blob: https://images.unsplash.com ${supabaseUrl} https://www.mofa-ye.org https://s0.wp.com https://*.youtube.com https://*.ytimg.com https://img.youtube.com https://i.ytimg.com https://yt3.ggpht.com`,
+              `media-src 'self' blob: ${supabaseUrl} https://*.youtube.com`,
               `connect-src 'self' ${supabaseUrl}`,
               "frame-ancestors 'none'",
               "base-uri 'self'",
