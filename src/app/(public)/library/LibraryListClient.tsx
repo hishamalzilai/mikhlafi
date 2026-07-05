@@ -57,7 +57,12 @@ function MediaCard({ item, index, onSelect }: { item: any; index: number; onSele
          </span>
       </div>
       
-      <div className="absolute bottom-0 left-0 right-0 p-5 z-20">
+      <div className="absolute bottom-0 left-0 right-0 p-5 z-20 space-y-2 bg-gradient-to-t from-black/80 via-black/40 to-transparent pt-8">
+         {item.type === 'video' && item.title && (
+            <h3 className="text-white font-black text-sm md:text-base line-clamp-2 drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)] leading-snug">
+               {item.title}
+            </h3>
+         )}
          <div className="flex items-center gap-4 text-slate-300 text-xs font-bold">
             {item.type === 'video' && item.duration && (
                <span className="flex items-center gap-1.5 bg-black/40 px-2.5 py-1 rounded-md backdrop-blur-sm border border-white/10">
