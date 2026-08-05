@@ -81,18 +81,15 @@ export async function verifyJWT<T extends Record<string, unknown> = Record<strin
 
 let jwtSecret: string | null = null;
 
-export function getAdminJwtSecret(): string {
+export function getAdminJwtSecret(): string | null {
   if (jwtSecret) return jwtSecret;
 
   const explicit = process.env.ADMIN_JWT_SECRET;
-  if (!explicit) {
-    throw new Error(
-      'ADMIN_JWT_SECRET environment variable must be set to a long random value (at least 32 characters). ' +
-        'Do not derive it from the admin password.'
+  if (!explicit || explicit.length < 32) {
+    console.error(
+      'ADMIN_JWT_SECRET environment variable must be set to a long random value (at least 32 characters).'
     );
-  }
-  if (explicit.length < 32) {
-    throw new Error('ADMIN_JWT_SECRET must be at least 32 characters long.');
+    return null;
   }
 
   jwtSecret = explicit;

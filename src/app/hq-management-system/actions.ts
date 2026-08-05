@@ -120,6 +120,9 @@ export async function verifyAdmin(email: string, pass: string) {
   if (emailMatch && passMatch) {
     // Issue a signed JWT so the session is verifiable in any worker/process
     const jwtSecret = getAdminJwtSecret();
+    if (!jwtSecret) {
+      return { success: false, error: 'خطأ في إعدادات النظام' };
+    }
     const sessionToken = await signJWT({ admin: true }, jwtSecret, 24 * 60 * 60);
 
     // Set a secure, httpOnly cookie with the signed token
@@ -151,16 +154,23 @@ export async function logoutAdmin() {
 }
 
 export async function checkAdminSession() {
-  const cookieStore = await cookies();
-  const token = cookieStore.get('admin_session')?.value;
-  
-  if (!token) return false;
-  
-  const jwtSecret = getAdminJwtSecret();
-  const payload = await verifyJWT<{ admin: boolean }>(token, jwtSecret);
-  if (!payload || !payload.admin) return false;
-  
-  return true;
+  try {
+    const cookieStore = await cookies();
+    const token = cookieStore.get('admin_session')?.value;
+    
+    if (!token) return false;
+    
+    const jwtSecret = getAdminJwtSecret();
+    if (!jwtSecret) return false;
+    
+    const payload = await verifyJWT<{ admin: boolean }>(token, jwtSecret);
+    if (!payload || !payload.admin) return false;
+    
+    return true;
+  } catch (err) {
+    console.error('[checkAdminSession] error:', err);
+    return false;
+  }
 }
 
 export async function getCvData() {
