@@ -5,6 +5,7 @@ import { checkAdminSession } from '@/app/hq-management-system/actions';
 import { archiveSchema } from '@/lib/schemas';
 import { isValidImageUrl, isValidGeneralUrl } from '@/lib/validate-url';
 import { revalidatePath } from 'next/cache';
+import { parseNumericId } from '@/lib/validate-id';
 
 export async function getArchiveItemsAction() {
   const isAdmin = await checkAdminSession();
@@ -53,8 +54,9 @@ export async function saveArchiveItemAction(formData: FormData) {
 
     archiveSchema.parse(archiveData);
 
-    if (id) {
-      const { error } = await supabaseAdmin.from('archive').update(archiveData).eq('id', id);
+    const numericId = parseNumericId(id);
+    if (numericId) {
+      const { error } = await supabaseAdmin.from('archive').update(archiveData).eq('id', numericId);
       if (error) throw error;
     } else {
       const { error } = await supabaseAdmin.from('archive').insert([archiveData]);
@@ -69,12 +71,17 @@ export async function saveArchiveItemAction(formData: FormData) {
   }
 }
 
-export async function deleteArchiveItemAction(id: number) {
+export async function deleteArchiveItemAction(id: number | string) {
   const isAdmin = await checkAdminSession();
   if (!isAdmin) return { success: false, error: 'Unauthorized' };
 
+  const numericId = parseNumericId(id);
+  if (!numericId) {
+    return { success: false, error: 'Invalid ID' };
+  }
+
   try {
-    const { error } = await supabaseAdmin.from('archive').delete().eq('id', id);
+    const { error } = await supabaseAdmin.from('archive').delete().eq('id', numericId);
     if (error) throw error;
     revalidatePath('/archive');
     revalidatePath('/hq-management-system/archive');

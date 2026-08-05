@@ -85,22 +85,18 @@ export function getAdminJwtSecret(): string {
   if (jwtSecret) return jwtSecret;
 
   const explicit = process.env.ADMIN_JWT_SECRET;
-  if (explicit) {
-    jwtSecret = explicit;
-    return jwtSecret;
-  }
-
-  const password = process.env.ADMIN_PASSWORD;
-  if (password) {
-    console.warn(
-      '[SECURITY] ADMIN_JWT_SECRET is not set. Deriving JWT secret from ADMIN_PASSWORD. ' +
-        'Set ADMIN_JWT_SECRET to a long random value for better security.'
+  if (!explicit) {
+    throw new Error(
+      'ADMIN_JWT_SECRET environment variable must be set to a long random value (at least 32 characters). ' +
+        'Do not derive it from the admin password.'
     );
-    jwtSecret = `admin-jwt-pepper:${password}`;
-    return jwtSecret;
+  }
+  if (explicit.length < 32) {
+    throw new Error('ADMIN_JWT_SECRET must be at least 32 characters long.');
   }
 
-  throw new Error('ADMIN_JWT_SECRET or ADMIN_PASSWORD environment variable must be set');
+  jwtSecret = explicit;
+  return jwtSecret;
 }
 
 export function clearAdminJwtSecret(): void {

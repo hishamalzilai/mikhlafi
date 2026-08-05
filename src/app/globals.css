@@ -42,6 +42,14 @@
     animation: fadeIn 0.7s ease-in-out forwards;
   }
 
+  .bg-pattern {
+    background-image: url('/pattern.png');
+  }
+
+  .bg-carbon-fibre {
+    background-image: url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
+  }
+
   @keyframes fadeIn {
     from {
       opacity: 0;

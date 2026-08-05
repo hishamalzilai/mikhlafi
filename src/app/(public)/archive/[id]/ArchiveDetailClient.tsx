@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import SafeImage from '@/components/SafeImage';
 import { FileText, Image as ImageIcon, Video, Calendar, ArrowRight, Download, Eye } from 'lucide-react';
 
 interface ArchiveDetailClientProps {
@@ -41,7 +42,7 @@ export default function ArchiveDetailClient({ item }: ArchiveDetailClientProps) 
           <div className="relative z-10 w-full px-4 sm:px-6 lg:px-12 flex flex-col items-center justify-center min-h-[80vh]">
              <div className="w-full max-w-7xl mx-auto flex flex-col items-center gap-8 pb-10">
                  <div className="w-full max-w-5xl rounded-2xl overflow-hidden shadow-2xl border border-slate-700/50 bg-slate-800 p-2">
-                    <img src={item.file_url || item.cover_url} alt={item.title} className="w-full h-auto max-h-[70vh] object-contain rounded-xl" />
+                    <SafeImage src={item.file_url || item.cover_url} alt={item.title} className="w-full h-auto max-h-[70vh] object-contain rounded-xl" />
                  </div>
                  <div className="max-w-3xl text-center">
                     <h1 className="text-3xl md:text-5xl font-black text-white mb-6 drop-shadow-md leading-tight">{item.title}</h1>

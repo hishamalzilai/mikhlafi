@@ -2,9 +2,25 @@
 
 import { supabaseAdmin } from '@/lib/supabase-admin';
 import { contactMessageSchema } from '@/lib/schemas';
+import { headers } from 'next/headers';
+import { getClientIp } from '@/lib/ip';
+import { checkRateLimit } from '@/lib/rate-limit';
+
+const CONTACT_WINDOW_MS = 10 * 60 * 1000; // 10 minutes
+const CONTACT_MAX_REQUESTS = 3;
 
 export async function submitContactMessage(prevState: unknown, formData: FormData) {
   try {
+    const h = await headers();
+    const clientIp = getClientIp(h);
+    const rateCheck = checkRateLimit(`contact:${clientIp}`, CONTACT_WINDOW_MS, CONTACT_MAX_REQUESTS);
+    if (!rateCheck.allowed) {
+      return {
+        success: false,
+        error: 'تم تجاوز الحد الأقصى لإرسال الرسائل. يرجى المحاولة لاحقًا.',
+      };
+    }
+
     const parsed = contactMessageSchema.safeParse({
       name: formData.get('name'),
       email: formData.get('email'),

@@ -1,6 +1,12 @@
 "use server";
 
 import { supabase } from '@/lib/supabase';
+import { headers } from 'next/headers';
+import { getClientIp } from '@/lib/ip';
+import { checkRateLimit } from '@/lib/rate-limit';
+
+const SEARCH_WINDOW_MS = 60 * 1000; // 1 minute
+const SEARCH_MAX_REQUESTS = 30;
 
 // Define unified search result type
 export type SearchResult = {
@@ -13,6 +19,13 @@ export type SearchResult = {
 };
 
 export async function searchAll(query: string): Promise<SearchResult[]> {
+  const h = await headers();
+  const clientIp = getClientIp(h);
+  const rateCheck = checkRateLimit(`search:${clientIp}`, SEARCH_WINDOW_MS, SEARCH_MAX_REQUESTS);
+  if (!rateCheck.allowed) {
+    return [];
+  }
+
   if (!query || query.trim().length < 3) return [];
   
   // Cap query length to prevent abuse

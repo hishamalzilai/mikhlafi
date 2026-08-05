@@ -45,6 +45,32 @@ function isUrlTrusted(url: string): boolean {
   }
 }
 
+const SAFE_CONTENT_TYPES = [
+  'application/pdf',
+  'application/msword',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+];
+
+const SAFE_CONTENT_TYPE_PREFIXES = ['image/', 'video/', 'audio/'];
+
+function sanitizeContentType(contentType: string | null): string {
+  if (!contentType) return 'application/octet-stream';
+  const normalized = contentType.split(';')[0].trim().toLowerCase();
+
+  if (SAFE_CONTENT_TYPES.includes(normalized)) return normalized;
+  if (SAFE_CONTENT_TYPE_PREFIXES.some(prefix => normalized.startsWith(prefix))) return normalized;
+
+  // Fallback to octet-stream to avoid browsers sniffing/executing HTML/JS
+  return 'application/octet-stream';
+}
+
+function sanitizeFilename(title: string): string {
+  // Replace characters that break Content-Disposition headers
+  return title.replace(/[^\w\u0600-\u06FF\-. ]/g, '_').trim() || 'download';
+}
+
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const resolvedParams = await params;
@@ -77,23 +103,19 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       return new NextResponse('Failed to fetch file', { status: response.status });
     }
 
-    const { searchParams } = new URL(request.url);
-    const action = searchParams.get('action'); // 'view' or 'download'
-
-    const contentType = response.headers.get('content-type') || 'application/octet-stream';
+    const rawContentType = response.headers.get('content-type');
+    const contentType = sanitizeContentType(rawContentType);
     const headers = new Headers();
     headers.set('Content-Type', contentType);
     headers.set('X-Content-Type-Options', 'nosniff');
 
-    if (action === 'download') {
-      // Provide a filename based on title or fallback to original extension
-      const urlParts = data.file_url.split('?')[0].split('.');
-      const ext = urlParts.length > 1 ? urlParts.pop() : 'pdf';
-      const filename = encodeURIComponent(data.title) + '.' + ext;
-      headers.set('Content-Disposition', `attachment; filename*=UTF-8''${filename}`);
-    } else {
-      headers.set('Content-Disposition', 'inline');
-    }
+    // Always force download to prevent browsers rendering HTML/JS inline
+    const urlParts = data.file_url.split('?')[0].split('.');
+    const ext = urlParts.length > 1 ? urlParts.pop() : 'pdf';
+    const baseFilename = sanitizeFilename(data.title || 'download');
+    const filename = `${baseFilename}.${ext}`;
+    const encodedFilename = encodeURIComponent(filename);
+    headers.set('Content-Disposition', `attachment; filename="${filename}"; filename*=UTF-8''${encodedFilename}`);
 
     return new NextResponse(response.body, {
       headers,

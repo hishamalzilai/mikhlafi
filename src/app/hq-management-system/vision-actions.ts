@@ -4,6 +4,7 @@ import { supabaseAdmin } from '@/lib/supabase-admin';
 import { checkAdminSession } from '@/app/hq-management-system/actions';
 import { studySchema } from '@/lib/schemas';
 import { revalidatePath } from 'next/cache';
+import { parseNumericId } from '@/lib/validate-id';
 
 export async function getStudiesAction() {
   const isAdmin = await checkAdminSession();
@@ -46,12 +47,13 @@ export async function saveStudyAction(formData: FormData) {
     // Validate with Zod
     studySchema.parse(studyData);
 
-    if (id) {
+    const numericId = parseNumericId(id);
+    if (numericId) {
       // Update
       const { error } = await supabaseAdmin
         .from('studies')
         .update(studyData)
-        .eq('id', id);
+        .eq('id', numericId);
       if (error) throw error;
     } else {
       // Insert
@@ -71,18 +73,24 @@ export async function saveStudyAction(formData: FormData) {
   }
 }
 
-export async function deleteStudyAction(id: number) {
+export async function deleteStudyAction(id: number | string) {
   const isAdmin = await checkAdminSession();
   if (!isAdmin) return { success: false, error: 'Unauthorized' };
 
+  const numericId = parseNumericId(id);
+  if (!numericId) {
+    return { success: false, error: 'Invalid ID' };
+  }
+
   try {
-    const { error } = await supabaseAdmin.from('studies').delete().eq('id', id);
+    const { error } = await supabaseAdmin.from('studies').delete().eq('id', numericId);
     if (error) throw error;
     
     revalidatePath('/vision');
     revalidatePath('/hq-management-system/vision');
     return { success: true };
   } catch (err: any) {
+    console.error("Delete Study Error:", err);
     return { success: false, error: err.message };
   }
 }

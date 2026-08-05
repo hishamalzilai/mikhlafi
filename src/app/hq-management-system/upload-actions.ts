@@ -2,16 +2,23 @@
 
 import { supabaseAdmin } from '@/lib/supabase-admin';
 import { checkAdminSession } from '@/app/hq-management-system/actions';
+import {
+  IMAGE_MIME_TYPES,
+  DOCUMENT_MIME_TYPES,
+  VIDEO_MIME_TYPES,
+  validateFileMagicBytes,
+} from '@/lib/file-validation';
 
 // Allowed file extensions and MIME types
 const ALLOWED_TYPES: Record<string, string[]> = {
-  image: ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/svg+xml'],
-  video: ['video/mp4', 'video/webm', 'video/ogg', 'video/quicktime'],
-  document: ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'],
+  image: [...IMAGE_MIME_TYPES],
+  video: [...VIDEO_MIME_TYPES, 'video/ogg', 'video/quicktime'],
+  document: [...DOCUMENT_MIME_TYPES, 'application/msword'],
 };
 
-const ALLOWED_EXTENSIONS = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'svg', 'mp4', 'webm', 'ogg', 'mov', 'pdf', 'doc', 'docx'];
+const ALLOWED_EXTENSIONS = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'mp4', 'webm', 'ogg', 'mov', 'pdf', 'doc', 'docx'];
 const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20MB
+const MAGIC_BYTES_SAMPLE_SIZE = 12;
 
 // Allowed storage bucket names
 const ALLOWED_BUCKETS = ['media', 'archive-media'];
@@ -53,9 +60,16 @@ export async function uploadMediaAction(formData: FormData) {
     }
 
     // Validate MIME type
-    const isValidMime = Object.values(ALLOWED_TYPES).flat().includes(file.type);
+    const allowedMimeTypes = Object.values(ALLOWED_TYPES).flat();
+    const isValidMime = allowedMimeTypes.includes(file.type);
     if (!isValidMime) {
       return { success: false, error: `نوع MIME غير مسموح: ${file.type}` };
+    }
+
+    // Validate actual file content (magic bytes) to prevent extension/MIME spoofing
+    const fileHead = await file.slice(0, MAGIC_BYTES_SAMPLE_SIZE).arrayBuffer();
+    if (!validateFileMagicBytes(fileHead, allowedMimeTypes)) {
+      return { success: false, error: 'محتوى الملف لا يطابق النوع المعلن. رفع مرفوض.' };
     }
 
     // Sanitize the upload path to prevent path traversal
@@ -69,7 +83,7 @@ export async function uploadMediaAction(formData: FormData) {
       .from(bucket)
       .upload(filePath, buffer, {
         contentType: file.type,
-        upsert: true
+        upsert: false
       });
 
     if (uploadError) throw uploadError;

@@ -4,6 +4,7 @@ import { supabaseAdmin } from '@/lib/supabase-admin';
 import { checkAdminSession } from '@/app/hq-management-system/actions';
 import { articleSchema } from '@/lib/schemas';
 import { revalidatePath } from 'next/cache';
+import { parseNumericId } from '@/lib/validate-id';
 
 export async function getArticlesAction() {
   const isAdmin = await checkAdminSession();
@@ -45,11 +46,12 @@ export async function saveArticleAction(formData: FormData) {
     // Validate with Zod
     articleSchema.parse(articleData);
 
-    if (id && id !== "null" && id !== "undefined") {
+    const numericId = parseNumericId(id);
+    if (numericId) {
       const { error } = await supabaseAdmin
         .from('articles')
         .update(articleData)
-        .eq('id', id);
+        .eq('id', numericId);
       if (error) throw error;
     } else {
       const { error } = await supabaseAdmin
@@ -68,12 +70,17 @@ export async function saveArticleAction(formData: FormData) {
   }
 }
 
-export async function deleteArticleAction(id: number) {
+export async function deleteArticleAction(id: number | string) {
   const isAdmin = await checkAdminSession();
   if (!isAdmin) return { success: false, error: 'Unauthorized' };
 
+  const numericId = parseNumericId(id);
+  if (!numericId) {
+    return { success: false, error: 'Invalid ID' };
+  }
+
   try {
-    const { error } = await supabaseAdmin.from('articles').delete().eq('id', id);
+    const { error } = await supabaseAdmin.from('articles').delete().eq('id', numericId);
     if (error) throw error;
     
     revalidatePath('/articles');

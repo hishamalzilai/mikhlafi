@@ -57,9 +57,10 @@ export function isValidImageUrl(url: string): boolean {
   if (!url || typeof url !== 'string') return false;
   if (isSafeRelativePath(url)) return true;
 
+  // Only absolute https:// URLs with allowed hostnames are permitted.
   try {
     const parsed = new URL(url);
-    if (parsed.protocol !== 'https:' && parsed.protocol !== 'http:') return false;
+    if (parsed.protocol !== 'https:') return false;
     return isAllowedImageHostname(parsed.hostname);
   } catch {
     return false;
@@ -72,7 +73,7 @@ export function isValidMediaUrl(url: string): boolean {
 
   try {
     const parsed = new URL(url);
-    if (parsed.protocol !== 'https:' && parsed.protocol !== 'http:') return false;
+    if (parsed.protocol !== 'https:') return false;
     return isAllowedMediaHostname(parsed.hostname);
   } catch {
     return false;

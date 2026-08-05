@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import SafeImage from '@/components/SafeImage';
 import { Image as ImageIcon, FileText, Video, Calendar, ArrowUpRight, Search, ChevronLeft } from 'lucide-react';
 
 interface ArchiveListClientProps {
@@ -78,12 +79,12 @@ export default function ArchiveListClient({ archiveList }: ArchiveListClientProp
                 {/* Image Thumbnail */}
                 {item.file_url && item.type === 'photo' && (
                   <div className="w-full h-48 rounded-2xl overflow-hidden mb-6 border border-slate-100 bg-slate-50">
-                    <img src={item.file_url} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                    <SafeImage src={item.file_url} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
                   </div>
                 )}
                 {item.cover_url && item.type === 'video' && (
                   <div className="w-full h-48 rounded-2xl overflow-hidden mb-6 border border-slate-100 bg-slate-50 relative">
-                    <img src={item.cover_url} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                    <SafeImage src={item.cover_url} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
                     <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
                       <div className="w-14 h-14 bg-white/90 rounded-full flex items-center justify-center shadow-lg">
                         <Video className="w-6 h-6 text-[#b18c39] ml-1" />

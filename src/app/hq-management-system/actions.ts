@@ -1,11 +1,12 @@
 "use server";
 
-import { cookies } from 'next/headers';
+import { cookies, headers } from 'next/headers';
 import crypto from 'crypto';
 import fs from 'fs';
 import path from 'path';
 import bcrypt from 'bcryptjs';
 import { signJWT, verifyJWT, getAdminJwtSecret } from '@/lib/jwt';
+import { getClientIp } from '@/lib/ip';
 import { cvSchema } from '@/lib/schemas';
 
 // Rate limiting for login attempts (best-effort, in-memory only).
@@ -76,35 +77,30 @@ function clearLoginAttempts(ip: string) {
   loginAttempts.delete(ip);
 }
 
-async function verifyAdminPassword(pass: string, adminPassEnv?: string, adminPassHashEnv?: string): Promise<boolean> {
+async function verifyAdminPassword(pass: string, adminPassHashEnv?: string): Promise<boolean> {
   if (adminPassHashEnv) {
     return bcrypt.compare(pass, adminPassHashEnv);
   }
-
-  if (adminPassEnv) {
-    console.warn(
-      '[SECURITY] ADMIN_PASSWORD is used as plain text. ' +
-        'Migrate to ADMIN_PASSWORD_HASH (bcrypt) for better security.'
-    );
-    return pass.length === adminPassEnv.length &&
-      crypto.timingSafeEqual(Buffer.from(pass), Buffer.from(adminPassEnv));
-  }
-
   return false;
+}
+
+function maskEmail(email: string): string {
+  return email.toLowerCase().trim();
 }
 
 export async function verifyAdmin(email: string, pass: string) {
   const adminEmail = process.env.ADMIN_EMAIL;
-  const adminPass = process.env.ADMIN_PASSWORD;
   const adminPassHash = process.env.ADMIN_PASSWORD_HASH;
 
-  if (!adminEmail || (!adminPass && !adminPassHash)) {
-    console.error("ADMIN_EMAIL and either ADMIN_PASSWORD_HASH or ADMIN_PASSWORD must be set in environment variables!");
+  if (!adminEmail || !adminPassHash) {
+    console.error("ADMIN_EMAIL and ADMIN_PASSWORD_HASH must be set in environment variables!");
     return { success: false, error: 'خطأ في إعدادات النظام' };
   }
 
-  // Rate limiting (use a generic key since we can't access IP easily in server actions)
-  const rateLimitKey = email.toLowerCase().trim();
+  // Rate limiting keyed by client IP (best-effort; in serverless use KV/D1 for strict limiting)
+  const h = await headers();
+  const clientIp = getClientIp(h);
+  const rateLimitKey = clientIp;
   const rateCheck = checkRateLimit(rateLimitKey);
 
   if (!rateCheck.allowed) {
@@ -119,7 +115,7 @@ export async function verifyAdmin(email: string, pass: string) {
   const emailMatch = email.length === adminEmail.length && 
     crypto.timingSafeEqual(Buffer.from(email), Buffer.from(adminEmail));
 
-  const passMatch = await verifyAdminPassword(pass, adminPass, adminPassHash);
+  const passMatch = await verifyAdminPassword(pass, adminPassHash);
 
   if (emailMatch && passMatch) {
     // Issue a signed JWT so the session is verifiable in any worker/process
@@ -131,7 +127,7 @@ export async function verifyAdmin(email: string, pass: string) {
     cookieStore.set('admin_session', sessionToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
+      sameSite: 'strict',
       maxAge: 60 * 60 * 24, // 24 hours
       path: '/',
     });

@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { checkAdminSession } from '@/app/hq-management-system/actions';
 import { newsSchema } from '@/lib/schemas';
 import { getValidationErrorMessage } from '@/lib/validation-error';
+import { parseNumericId } from '@/lib/validate-id';
 
 export async function GET() {
   const isAdmin = await checkAdminSession();
@@ -38,8 +39,12 @@ export async function PUT(req: NextRequest) {
   try {
     const rawBody = await req.json();
     const { id, ...rest } = rawBody;
+    const numericId = parseNumericId(id);
+    if (!numericId) {
+      return NextResponse.json({ error: 'Invalid ID' }, { status: 400 });
+    }
     const validatedBody = newsSchema.parse(rest);
-    const { data, error } = await supabaseAdmin.from('news').update(validatedBody).eq('id', id).select();
+    const { data, error } = await supabaseAdmin.from('news').update(validatedBody).eq('id', numericId).select();
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
     return NextResponse.json(data);
   } catch (err: unknown) {

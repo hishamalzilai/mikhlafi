@@ -4,7 +4,13 @@ import { supabaseAdmin } from '@/lib/supabase-admin';
 import { checkAdminSession } from '@/app/hq-management-system/actions';
 import { newsSchema } from '@/lib/schemas';
 import { isValidImageUrl } from '@/lib/validate-url';
+import { IMAGE_MIME_TYPES, validateFileMagicBytes } from '@/lib/file-validation';
 import { revalidatePath } from 'next/cache';
+import { parseNumericId } from '@/lib/validate-id';
+
+const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5MB
+const ALLOWED_IMAGE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
+const MAGIC_BYTES_SAMPLE_SIZE = 12;
 
 export async function getNewsAction() {
   const isAdmin = await checkAdminSession();
@@ -44,7 +50,25 @@ export async function saveNewsAction(formData: FormData) {
 
     // Handle image upload
     if (imageFile && imageFile.size > 0 && imageFile.name !== 'undefined') {
-      const fileExt = imageFile.name.split('.').pop() || 'png';
+      const fileExt = (imageFile.name.split('.').pop() || '').toLowerCase();
+
+      if (!ALLOWED_IMAGE_EXTENSIONS.includes(fileExt)) {
+        return { success: false, error: `امتداد الصورة غير مسموح: .${fileExt}` };
+      }
+
+      if (imageFile.size > MAX_IMAGE_SIZE) {
+        return { success: false, error: `حجم الصورة يتجاوز الحد الأقصى (5MB)` };
+      }
+
+      if (!IMAGE_MIME_TYPES.includes(imageFile.type as any)) {
+        return { success: false, error: `نوع MIME غير مسموح: ${imageFile.type}` };
+      }
+
+      const fileHead = await imageFile.slice(0, MAGIC_BYTES_SAMPLE_SIZE).arrayBuffer();
+      if (!validateFileMagicBytes(fileHead, IMAGE_MIME_TYPES as unknown as string[])) {
+        return { success: false, error: 'محتوى الصورة لا يطابق النوع المعلن. رفع مرفوض.' };
+      }
+
       const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
       const filePath = `news/${fileName}`;
       
@@ -55,7 +79,7 @@ export async function saveNewsAction(formData: FormData) {
           .from('media')
           .upload(filePath, buffer, { 
             contentType: imageFile.type,
-            upsert: true 
+            upsert: false 
           });
           
         if (uploadError) {
@@ -88,11 +112,12 @@ export async function saveNewsAction(formData: FormData) {
     // Validate with Zod
     newsSchema.parse(newsData);
 
-    if (id && id !== "null" && id !== "undefined") {
+    const numericId = parseNumericId(id);
+    if (numericId) {
       const { error } = await supabaseAdmin
         .from('news')
         .update(newsData)
-        .eq('id', id);
+        .eq('id', numericId);
       if (error) throw error;
     } else {
       const { error } = await supabaseAdmin
@@ -111,12 +136,17 @@ export async function saveNewsAction(formData: FormData) {
   }
 }
 
-export async function deleteNewsAction(id: number) {
+export async function deleteNewsAction(id: number | string) {
   const isAdmin = await checkAdminSession();
   if (!isAdmin) return { success: false, error: 'Unauthorized' };
 
+  const numericId = parseNumericId(id);
+  if (!numericId) {
+    return { success: false, error: 'Invalid ID' };
+  }
+
   try {
-    const { error } = await supabaseAdmin.from('news').delete().eq('id', id);
+    const { error } = await supabaseAdmin.from('news').delete().eq('id', numericId);
     if (error) throw error;
     
     revalidatePath('/news');
