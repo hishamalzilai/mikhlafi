@@ -1,14 +1,10 @@
-import { supabase } from '@/lib/supabase';
+import { getCachedVision } from '@/lib/lists-cache';
 import VisionListClient from './VisionListClient';
 
-export const revalidate = 60;
+export const revalidate = 300;
 
 async function getStudies() {
-  const { data } = await supabase
-    .from('studies')
-    .select('*')
-    .order('published_date', { ascending: false });
-  return data || [];
+  return getCachedVision();
 }
 
 export default async function VisionPage() {

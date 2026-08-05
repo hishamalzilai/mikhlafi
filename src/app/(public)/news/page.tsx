@@ -1,14 +1,10 @@
-import { supabase } from '@/lib/supabase';
+import { getCachedNews } from '@/lib/lists-cache';
 import NewsListClient from './NewsListClient';
 
-export const revalidate = 60;
+export const revalidate = 300;
 
 async function getNews() {
-  const { data } = await supabase
-    .from('news')
-    .select('*')
-    .order('published_date', { ascending: false });
-  return data || [];
+  return getCachedNews();
 }
 
 export default async function NewsPage() {

@@ -2,9 +2,10 @@
 
 import { supabaseAdmin } from '@/lib/supabase-admin';
 import { supabase } from '@/lib/supabase';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
 import { brandingSchema } from '@/lib/schemas';
 import { checkAdminSession } from './actions';
+import { getCachedBranding } from '@/lib/cache';
 
 export type BrandingSettings = {
   header_logo_url: string;
@@ -21,26 +22,7 @@ const DEFAULT_BRANDING: BrandingSettings = {
 };
 
 export async function getBrandingSettings() {
-  try {
-    const { data, error } = await supabase
-      .from('site_settings')
-      .select('content')
-      .eq('id', 'branding')
-      .single();
-
-    if (error) {
-      if (error.code === 'PGRST116') { // Not found
-        return DEFAULT_BRANDING;
-      }
-      console.error("Error fetching branding settings:", error);
-      return DEFAULT_BRANDING;
-    }
-
-    return { ...DEFAULT_BRANDING, ...(data.content as any) } as BrandingSettings;
-  } catch (err) {
-    console.error("Branding fetch catch:", err);
-    return DEFAULT_BRANDING;
-  }
+  return getCachedBranding();
 }
 
 export async function updateBrandingSettings(settings: BrandingSettings) {
@@ -65,6 +47,7 @@ export async function updateBrandingSettings(settings: BrandingSettings) {
 
     revalidatePath('/');
     revalidatePath('/hq-management-system/branding');
+    revalidateTag('branding-settings', 'default');
     return { success: true };
   } catch (err: any) {
     console.error("Error updating branding settings:", err);

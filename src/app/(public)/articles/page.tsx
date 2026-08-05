@@ -1,14 +1,10 @@
-import { supabase } from '@/lib/supabase';
+import { getCachedArticles } from '@/lib/lists-cache';
 import ArticlesListClient from './ArticlesListClient';
 
-export const revalidate = 60;
+export const revalidate = 300;
 
 async function getArticles() {
-  const { data } = await supabase
-    .from('articles')
-    .select('*')
-    .order('published_date', { ascending: false });
-  return data || [];
+  return getCachedArticles();
 }
 
 export default async function ArticlesPage() {

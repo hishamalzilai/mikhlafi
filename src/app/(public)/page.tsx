@@ -2,7 +2,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowLeft, Shield, Newspaper, Play, Globe, Users, Scale, Archive, BookOpen, Quote, FileText, UserRound } from 'lucide-react';
 import { getHomepageSettings } from '@/app/hq-management-system/home-actions';
-import { supabase } from '@/lib/supabase';
+import { getCachedHomepageData } from '@/lib/homepage-data';
 
 import TimelineCarousel from '@/components/TimelineCarousel';
 import { getMediaThumbnailUrl } from '@/lib/validate-url';
@@ -11,45 +11,13 @@ export const revalidate = 60; // Revalidate every minute
 
 export default async function Home() {
   const content = await getHomepageSettings();
-  
-  // Fetch latest 2 studies
-  const { data: latestStudies } = await supabase
-    .from('studies')
-    .select('*')
-    .order('published_date', { ascending: false })
-    .limit(2);
-
-  // Fetch latest media: 1 Video and 1 Photo
-  const { data: latestVideo } = await supabase
-    .from('media_library')
-    .select('*')
-    .eq('type', 'video')
-    .order('created_at', { ascending: false })
-    .limit(1)
-    .single();
-
-  const { data: latestPhoto } = await supabase
-    .from('media_library')
-    .select('*')
-    .eq('type', 'photo')
-    .order('created_at', { ascending: false })
-    .limit(1)
-    .single();
-
-  // Fetch latest 3 news
-  const { data: latestNews } = await supabase
-    .from('news')
-    .select('*')
-    .order('published_date', { ascending: false })
-    .limit(3);
-
-  // Fetch latest 3 testimonials
-  const { data: latestTestimonials } = await supabase
-    .from('testimonials')
-    .select('*')
-    .order('order_index', { ascending: true })
-    .order('created_at', { ascending: false })
-    .limit(3);
+  const {
+    latestStudies,
+    latestVideo,
+    latestPhoto,
+    latestNews,
+    latestTestimonials,
+  } = await getCachedHomepageData();
 
   // Fallback defaults in case no data yet
   const heroTitle = content?.hero_title || "عبد الملك عبد الجليل المخلافي";

@@ -7,8 +7,15 @@ if (!supabaseUrl || !supabaseAnonKey) {
   console.warn("Supabase environment variables are missing! Site functionality will be limited.");
 }
 
-// Initialize the Supabase client with fail-safe values for build time if necessary
+// Initialize the Supabase client optimized for server-side rendering.
+// persistSession is disabled to avoid unnecessary storage overhead in a stateless server.
 export const supabase = createClient(
   supabaseUrl || 'https://placeholder.supabase.co', 
-  supabaseAnonKey || 'placeholder'
+  supabaseAnonKey || 'placeholder',
+  {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false,
+    },
+  }
 );

@@ -1,16 +1,25 @@
 import { supabase } from '@/lib/supabase';
 import ArchiveListClient from './ArchiveListClient';
 import { Search } from 'lucide-react';
+import { unstable_cache } from 'next/cache';
+import { CACHE_TAGS } from '@/lib/cache';
 
 export const revalidate = 3600;
-export const dynamic = 'force-dynamic';
+
+const getCachedArchive = unstable_cache(
+  async () => {
+    const { data } = await supabase
+      .from('archive')
+      .select('*')
+      .order('published_date', { ascending: false });
+    return data || [];
+  },
+  ['archive-list'],
+  { revalidate: 3600, tags: [CACHE_TAGS.archive] }
+);
 
 async function getArchive() {
-  const { data } = await supabase
-    .from('archive')
-    .select('*')
-    .order('published_date', { ascending: false });
-  return data || [];
+  return getCachedArchive();
 }
 
 export default async function ArchivePage() {

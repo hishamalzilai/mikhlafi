@@ -1,9 +1,10 @@
 "use server";
 
 import { supabaseAdmin } from '@/lib/supabase-admin';
-import { supabase } from '@/lib/supabase';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
 import { homepageSchema } from '@/lib/schemas';
+import { checkAdminSession } from './actions';
+import { getCachedHomepage } from '@/lib/cache';
 
 export type TimelineItem = {
   year: string;
@@ -21,29 +22,10 @@ export type HomepageContent = {
 };
 
 export async function getHomepageSettings() {
-  try {
-    const { data, error } = await supabase
-      .from('site_settings')
-      .select('content')
-      .eq('id', 'homepage')
-      .single();
-
-    if (error) {
-      console.error("Error fetching homepage settings:", error);
-      return null;
-    }
-
-    return data.content as HomepageContent;
-  } catch (err) {
-    console.error("Homepage fetch catch:", err);
-    return null;
-  }
+  return getCachedHomepage();
 }
 
-import { checkAdminSession } from './actions';
-
 export async function updateHomepageSettings(content: HomepageContent) {
-  // Security Check: Verify admin session before allowing updates
   const isAdmin = await checkAdminSession();
   if (!isAdmin) {
     return { success: false, error: 'غير مصرح لك بإجراء هذا التعديل.' };
@@ -65,5 +47,6 @@ export async function updateHomepageSettings(content: HomepageContent) {
 
   revalidatePath('/');
   revalidatePath('/hq-management-system/home');
+  revalidateTag('homepage-settings', 'default');
   return { success: true };
 }

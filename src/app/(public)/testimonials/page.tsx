@@ -1,12 +1,11 @@
 import React from 'react';
-import { getTestimonials } from '../../hq-management-system/testimonials-actions';
+import { getCachedTestimonials } from '@/lib/lists-cache';
 import TestimonialsListClient from './TestimonialsListClient';
 
-export const revalidate = 60;
-export const dynamic = 'force-dynamic';
+export const revalidate = 300;
 
 export default async function TestimonialsPage() {
-  const testimonials = await getTestimonials();
+  const testimonials = await getCachedTestimonials();
 
   return (
     <div className="min-h-screen bg-slate-50/50 pb-24 animate-in fade-in slide-in-from-bottom-4 duration-1000">
