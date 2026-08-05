@@ -2,6 +2,7 @@ import { supabaseAdmin } from '@/lib/supabase-admin';
 import { NextRequest, NextResponse } from 'next/server';
 import { checkAdminSession } from '@/app/hq-management-system/actions';
 import { archiveSchema } from '@/lib/schemas';
+import { getValidationErrorMessage } from '@/lib/validation-error';
 
 export async function GET() {
   const isAdmin = await checkAdminSession();
@@ -25,8 +26,8 @@ export async function POST(req: NextRequest) {
     const { data, error } = await supabaseAdmin.from('archive').insert([validatedBody]).select();
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
     return NextResponse.json(data);
-  } catch (err: any) {
-    return NextResponse.json({ error: err.errors || err.message }, { status: 400 });
+  } catch (err: unknown) {
+    return NextResponse.json({ error: getValidationErrorMessage(err) }, { status: 400 });
   }
 }
 
@@ -41,8 +42,8 @@ export async function PUT(req: NextRequest) {
     const { data, error } = await supabaseAdmin.from('archive').update(validatedBody).eq('id', id).select();
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
     return NextResponse.json(data);
-  } catch (err: any) {
-    return NextResponse.json({ error: err.errors || err.message }, { status: 400 });
+  } catch (err: unknown) {
+    return NextResponse.json({ error: getValidationErrorMessage(err) }, { status: 400 });
   }
 }
 

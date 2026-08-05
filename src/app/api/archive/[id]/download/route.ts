@@ -3,22 +3,49 @@ import { supabaseAdmin } from '@/lib/supabase-admin';
 
 export const dynamic = 'force-dynamic';
 
-// Allowlist of trusted domains for file fetching (prevent SSRF)
-const TRUSTED_DOMAINS = [
-  'sup.hazlinkdata.cloud',
-  'supabase.co',
-];
+// Build an allowlist from the configured Supabase URL plus known custom domains.
+// We use exact matches or a proper suffix check (with a leading dot) to avoid
+// subdomain takeover vulnerabilities like evil-supabase.co or evil-sup.hazlinkdata.cloud.
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+let supabaseHostname = '';
+if (supabaseUrl) {
+  try {
+    supabaseHostname = new URL(supabaseUrl).hostname;
+  } catch {
+    supabaseHostname = '';
+  }
+}
+
+const TRUSTED_HOSTNAMES = new Set(
+  [
+    supabaseHostname,
+    'sup.hazlinkdata.cloud',
+  ].filter(Boolean)
+);
+
+const TRUSTED_SUFFIXES = ['supabase.co'];
 
 function isUrlTrusted(url: string): boolean {
   try {
     const parsed = new URL(url);
-    return TRUSTED_DOMAINS.some(domain => parsed.hostname.endsWith(domain));
+
+    // Only HTTPS is allowed
+    if (parsed.protocol !== 'https:') return false;
+
+    // Reject URLs containing embedded credentials
+    if (parsed.username || parsed.password) return false;
+
+    // Exact hostname match
+    if (TRUSTED_HOSTNAMES.has(parsed.hostname)) return true;
+
+    // Safe suffix match (requires a subdomain separator)
+    return TRUSTED_SUFFIXES.some(suffix => parsed.hostname.endsWith('.' + suffix));
   } catch {
     return false;
   }
 }
 
-export async function GET(request: NextRequest, { params }: { params: any }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const resolvedParams = await params;
     const { id } = resolvedParams;
@@ -77,4 +104,3 @@ export async function GET(request: NextRequest, { params }: { params: any }) {
     return new NextResponse('Internal Server Error', { status: 500 });
   }
 }
-

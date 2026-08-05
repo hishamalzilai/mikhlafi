@@ -1,6 +1,7 @@
 "use server";
 
 import { supabaseAdmin } from '@/lib/supabase-admin';
+import { supabase } from '@/lib/supabase';
 import { revalidatePath } from 'next/cache';
 import { checkAdminSession } from './actions';
 import { aboutSchema } from '@/lib/schemas';
@@ -10,7 +11,7 @@ export type AboutContent = {
 };
 
 export async function getAboutContentAction(): Promise<AboutContent | null> {
-  const { data, error } = await supabaseAdmin
+  const { data, error } = await supabase
     .from('site_settings')
     .select('content')
     .eq('id', 'about_us')
@@ -54,6 +55,6 @@ export async function saveAboutContentAction(content: AboutContent) {
     return { success: true };
   } catch (err: any) {
     console.error("[saveAboutContentAction] validation/save error:", err);
-    return { success: false, error: err.errors?.[0]?.message || err.message || "حدث خطأ غير متوقع" };
+    return { success: false, error: err.issues?.[0]?.message || err.message || "حدث خطأ غير متوقع" };
   }
 }

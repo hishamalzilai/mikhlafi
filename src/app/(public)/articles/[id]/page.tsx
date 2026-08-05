@@ -1,4 +1,4 @@
-import { supabaseAdmin } from '@/lib/supabase-admin';
+import { supabase } from '@/lib/supabase';
 import { notFound } from 'next/navigation';
 import ArticleContent from './ArticleContent';
 
@@ -8,7 +8,7 @@ export const revalidate = 3600;
 
 // Server-side data fetching
 async function getArticle(id: string) {
-  const { data, error } = await supabaseAdmin
+  const { data, error } = await supabase
     .from('articles')
     .select('*')
     .eq('id', id)

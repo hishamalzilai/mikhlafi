@@ -2,6 +2,8 @@
 
 import { supabaseAdmin } from '@/lib/supabase-admin';
 import { checkAdminSession } from '@/app/hq-management-system/actions';
+import { mediaLibrarySchema } from '@/lib/schemas';
+import { isValidMediaUrl, isValidImageUrl } from '@/lib/validate-url';
 import { revalidatePath } from 'next/cache';
 
 export async function getLibraryAction() {
@@ -32,6 +34,10 @@ export async function saveLibraryItemAction(formData: FormData) {
     const thumbnail_url = formData.get('thumbnail_url') as string;
     const duration = formData.get('duration') as string;
 
+    if (thumbnail_url && !isValidMediaUrl(thumbnail_url) && !isValidImageUrl(thumbnail_url)) {
+      return { success: false, error: 'رابط الصورة المصغرة غير آمن أو غير مسموح به' };
+    }
+
     const mediaData = {
       title,
       description,
@@ -39,6 +45,8 @@ export async function saveLibraryItemAction(formData: FormData) {
       thumbnail_url,
       duration: type === 'video' ? duration : null,
     };
+
+    mediaLibrarySchema.parse(mediaData);
 
     if (id && id !== "null" && id !== "undefined") {
       const { error } = await supabaseAdmin.from('media_library').update(mediaData).eq('id', id);
@@ -77,15 +85,23 @@ export async function bulkSaveLibraryItemsAction(items: any[]) {
   if (!isAdmin) return { success: false, error: 'Unauthorized' };
 
   try {
+    const validatedItems = items.map((item, idx) => {
+      try {
+        return mediaLibrarySchema.parse(item);
+      } catch (err: any) {
+        throw new Error(`Validation failed for item ${idx + 1}: ${err.issues?.[0]?.message || err.message}`);
+      }
+    });
+
     const { data, error } = await supabaseAdmin
       .from('media_library')
-      .insert(items);
+      .insert(validatedItems);
 
     if (error) throw error;
 
     revalidatePath('/library');
     revalidatePath('/hq-management-system/library');
-    return { success: true, count: items.length };
+    return { success: true, count: validatedItems.length };
   } catch (err: any) {
     console.error("[LibraryAction] bulk save error:", err);
     return { success: false, error: err.message };

@@ -153,7 +153,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <Newspaper size={20} />
             <span className="text-[10px] font-black">الأخبار</span>
           </Link>
-          <Link href="/" target="_blank" className="flex flex-col items-center gap-1 text-slate-400">
+          <Link href="/" target="_blank" rel="noopener noreferrer" className="flex flex-col items-center gap-1 text-slate-400">
             <Home size={20} />
             <span className="text-[10px] font-black">الموقع</span>
           </Link>

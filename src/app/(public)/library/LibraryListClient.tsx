@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import Image from 'next/image';
+import { getMediaThumbnailUrl } from '@/lib/validate-url';
 import { Play, ChevronLeft, ChevronRight, Search, Clock, Film, X, Expand } from 'lucide-react';
 
 interface LibraryListClientProps {
@@ -10,10 +11,10 @@ interface LibraryListClientProps {
 }
 
 function MediaCard({ item, index, onSelect }: { item: any; index: number; onSelect: () => void }) {
-  const [imgSrc, setImgSrc] = useState(item.thumbnail_url || (item.type === 'video' ? '/default-video-cover.png' : ''));
+  const [imgSrc, setImgSrc] = useState(getMediaThumbnailUrl(item.thumbnail_url, item.type, '/default-video-cover.png'));
 
   useEffect(() => {
-    setImgSrc(item.thumbnail_url || (item.type === 'video' ? '/default-video-cover.png' : ''));
+    setImgSrc(getMediaThumbnailUrl(item.thumbnail_url, item.type, '/default-video-cover.png'));
   }, [item.thumbnail_url, item.type]);
 
   const handleImageError = () => {

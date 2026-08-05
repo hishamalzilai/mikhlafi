@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { Save, Image as ImageIcon, Maximize, RefreshCw, CheckCircle2, AlertCircle, Layout, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { getBrandingSettings, updateBrandingSettings, BrandingSettings } from '../branding-actions';
+import SafeImage from '@/components/SafeImage';
 
 export default function BrandingManagement() {
   const [settings, setSettings] = useState<BrandingSettings | null>(null);
@@ -132,7 +133,7 @@ export default function BrandingManagement() {
           <div className="mt-4 p-8 bg-slate-50 rounded-3xl border border-slate-100 overflow-hidden">
              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-6">معاينة مباشرة (Header Preview)</span>
              <div className="bg-white py-6 px-4 border border-slate-200 rounded-2xl flex items-center justify-center min-h-[160px]">
-                <img 
+                <SafeImage 
                   src={settings.header_logo_url} 
                   alt="Preview" 
                   style={{ transform: `scale(${settings.header_logo_scale})`, transition: 'transform 0.3s' }}
@@ -195,7 +196,7 @@ export default function BrandingManagement() {
           <div className="mt-4 p-8 bg-slate-900 rounded-3xl border border-slate-800 overflow-hidden">
              <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-6 text-center">معاينة مباشرة على خلفية الفوتر</span>
              <div className="py-6 px-4 flex items-center justify-center min-h-[160px]">
-                <img 
+                <SafeImage 
                   src={settings.footer_logo_url} 
                   alt="Preview" 
                   style={{ transform: `scale(${settings.footer_logo_scale})`, transition: 'transform 0.3s' }}

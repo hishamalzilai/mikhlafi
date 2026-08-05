@@ -2,6 +2,8 @@
 
 import { supabaseAdmin } from '@/lib/supabase-admin';
 import { checkAdminSession } from '@/app/hq-management-system/actions';
+import { archiveSchema } from '@/lib/schemas';
+import { isValidImageUrl, isValidGeneralUrl } from '@/lib/validate-url';
 import { revalidatePath } from 'next/cache';
 
 export async function getArchiveItemsAction() {
@@ -33,6 +35,13 @@ export async function saveArchiveItemAction(formData: FormData) {
     const fileUrl = formData.get('file_url') as string;
     const coverUrl = formData.get('cover_url') as string;
 
+    if (fileUrl && !isValidGeneralUrl(fileUrl)) {
+      return { success: false, error: 'رابط الملف غير آمن أو غير مسموح به' };
+    }
+    if (coverUrl && !isValidImageUrl(coverUrl)) {
+      return { success: false, error: 'رابط صورة الغلاف غير آمن أو غير مسموح به' };
+    }
+
     const archiveData = {
       title,
       description,
@@ -41,6 +50,8 @@ export async function saveArchiveItemAction(formData: FormData) {
       file_url: fileUrl || null,
       cover_url: coverUrl || null,
     };
+
+    archiveSchema.parse(archiveData);
 
     if (id) {
       const { error } = await supabaseAdmin.from('archive').update(archiveData).eq('id', id);

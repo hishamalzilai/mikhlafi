@@ -1,9 +1,17 @@
 "use client";
 
 import { useEffect, useState, useRef } from 'react';
-import { uploadFile, formatSize, type UploadProgress } from '@/lib/upload';
-import { Loader2, Plus, Trash2, Edit, CheckCircle2, Archive, Image as ImageIcon, FileText, Video, Calendar, Eye, Link2, Tag, Upload, X, ExternalLink, CloudUpload, Zap, Search } from 'lucide-react';
+import imageCompression from 'browser-image-compression';
+import { Loader2, Plus, Trash2, Edit, CheckCircle2, Archive, Image as ImageIcon, FileText, Video, Calendar, Eye, Link2, Upload, CloudUpload, Zap, Search } from 'lucide-react';
 import { getArchiveItemsAction, saveArchiveItemAction, deleteArchiveItemAction } from '../archive-actions';
+import { uploadMediaAction } from '../upload-actions';
+import { formatSize } from '@/lib/format';
+
+type UploadProgress = {
+  stage: 'compressing' | 'uploading' | 'done' | 'error';
+  percent: number;
+  message: string;
+};
 
 const ARCHIVE_TYPES = [
   { id: 'photo', label: 'صورة تاريخية', icon: '📸', color: 'text-amber-600 bg-amber-50 border-amber-200', accept: 'image/*' },
@@ -80,32 +88,53 @@ export default function AdminArchivePage() {
     setIsAdding(true);
   };
 
-  // Handle file upload with compression
+  // Handle file upload via server action (compression on client, upload on server)
   const handleFileUpload = async (file: File, target: 'content' | 'cover') => {
     const progressSetter = target === 'content' ? setUploadProgress : setCoverUploadProgress;
+    const isImage = file.type.startsWith('image/') || /\.(jpg|jpeg|png|webp)$/i.test(file.name);
 
     try {
-      const result = await uploadFile(
-        file,
-        type as 'photo' | 'document' | 'video',
-        (progress) => progressSetter(progress)
-      );
+      let fileToUpload = file;
+      let compressionInfo = '';
+
+      if (isImage && target === 'content') {
+        progressSetter({ stage: 'compressing', percent: 20, message: 'جاري ضغط الصورة...' });
+        const options = {
+          maxSizeMB: 0.5,
+          maxWidthOrHeight: 1920,
+          useWebWorker: true,
+          fileType: 'image/webp' as const,
+        };
+        fileToUpload = await imageCompression(file, options);
+        const originalSize = file.size;
+        const compressedSize = fileToUpload.size;
+        const ratio = Math.round((1 - compressedSize / originalSize) * 100);
+        compressionInfo = `✅ تم الضغط: ${formatSize(originalSize)} → ${formatSize(compressedSize)} (وفّرت ${ratio}%)`;
+      }
+
+      progressSetter({ stage: 'uploading', percent: 50, message: 'جاري الرفع إلى الخادم...' });
+
+      const formData = new FormData();
+      formData.append('file', fileToUpload, fileToUpload.name);
+      formData.append('path', target === 'cover' ? 'archive/covers' : 'archive');
+      formData.append('bucket', 'archive-media');
+
+      const result = await uploadMediaAction(formData);
+      if (!result.success || !result.url) throw new Error(result.error || 'فشل رفع الملف');
 
       if (target === 'content') {
         setFileUrl(result.url);
         if (type === 'photo') setPreviewUrl(result.url);
-        if (result.compressionRatio > 0) {
-          setCompressionInfo(`✅ تم الضغط: ${formatSize(result.originalSize)} → ${formatSize(result.compressedSize)} (وفّرت ${result.compressionRatio}%)`);
-        }
+        if (compressionInfo) setCompressionInfo(compressionInfo);
       } else {
         setCoverUrl(result.url);
       }
 
-      // Clear progress after delay
+      progressSetter({ stage: 'done', percent: 100, message: 'تم الرفع بنجاح!' });
       setTimeout(() => progressSetter(null), 3000);
-
-    } catch (error: any) {
-      progressSetter({ stage: 'error', percent: 0, message: error.message });
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'فشل رفع الملف';
+      progressSetter({ stage: 'error', percent: 0, message });
       setTimeout(() => progressSetter(null), 5000);
     }
   };
@@ -495,7 +524,7 @@ export default function AdminArchivePage() {
                           <td className="p-5 text-slate-500 font-medium" dir="ltr">{item.published_date}</td>
                           <td className="p-5">
                             <div className="flex justify-center gap-3 opacity-50 group-hover:opacity-100 transition-opacity">
-                              <a href={`/archive/${item.id}`} target="_blank" className="p-2.5 text-slate-500 bg-slate-50 hover:bg-slate-600 hover:text-white rounded-lg transition-all shadow-sm" title="معاينة"><Eye className="w-4 h-4" /></a>
+                              <a href={`/archive/${item.id}`} target="_blank" rel="noopener noreferrer" className="p-2.5 text-slate-500 bg-slate-50 hover:bg-slate-600 hover:text-white rounded-lg transition-all shadow-sm" title="معاينة"><Eye className="w-4 h-4" /></a>
                               <button onClick={() => handleEdit(item)} className="p-2.5 text-blue-500 bg-blue-50 hover:bg-blue-500 hover:text-white rounded-lg transition-all shadow-sm" title="تعديل"><Edit className="w-4 h-4" /></button>
                               <button onClick={() => handleDelete(item.id)} className="p-2.5 text-red-500 bg-red-50 hover:bg-red-500 hover:text-white rounded-lg transition-all shadow-sm" title="حذف"><Trash2 className="w-4 h-4" /></button>
                             </div>

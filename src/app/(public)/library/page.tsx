@@ -1,4 +1,4 @@
-import { supabaseAdmin } from '@/lib/supabase-admin';
+import { supabase } from '@/lib/supabase';
 import LibraryListClient from './LibraryListClient';
 import { Film } from 'lucide-react';
 
@@ -6,7 +6,7 @@ export const revalidate = 3600;
 export const dynamic = 'force-dynamic';
 
 async function getMedia() {
-  const { data } = await supabaseAdmin
+  const { data } = await supabase
     .from('media_library')
     .select('*')
     .order('created_at', { ascending: false });

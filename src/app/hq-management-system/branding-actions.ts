@@ -1,6 +1,7 @@
 "use server";
 
 import { supabaseAdmin } from '@/lib/supabase-admin';
+import { supabase } from '@/lib/supabase';
 import { revalidatePath } from 'next/cache';
 import { brandingSchema } from '@/lib/schemas';
 import { checkAdminSession } from './actions';
@@ -21,7 +22,7 @@ const DEFAULT_BRANDING: BrandingSettings = {
 
 export async function getBrandingSettings() {
   try {
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await supabase
       .from('site_settings')
       .select('content')
       .eq('id', 'branding')
@@ -67,6 +68,6 @@ export async function updateBrandingSettings(settings: BrandingSettings) {
     return { success: true };
   } catch (err: any) {
     console.error("Error updating branding settings:", err);
-    return { success: false, error: err.errors?.[0]?.message || err.message };
+    return { success: false, error: err.issues?.[0]?.message || err.message };
   }
 }

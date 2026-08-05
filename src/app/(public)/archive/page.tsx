@@ -1,4 +1,4 @@
-import { supabaseAdmin } from '@/lib/supabase-admin';
+import { supabase } from '@/lib/supabase';
 import ArchiveListClient from './ArchiveListClient';
 import { Search } from 'lucide-react';
 
@@ -6,7 +6,7 @@ export const revalidate = 3600;
 export const dynamic = 'force-dynamic';
 
 async function getArchive() {
-  const { data } = await supabaseAdmin
+  const { data } = await supabase
     .from('archive')
     .select('*')
     .order('published_date', { ascending: false });

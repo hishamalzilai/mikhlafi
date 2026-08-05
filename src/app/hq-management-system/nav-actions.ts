@@ -1,13 +1,15 @@
 "use server";
 
 import { supabaseAdmin } from '@/lib/supabase-admin';
+import { supabase } from '@/lib/supabase';
 import { revalidatePath } from 'next/cache';
 import { DEFAULT_NAV_ORDER, MASTER_NAVIGATION } from '@/lib/nav-config';
+import { navigationOrderSchema } from '@/lib/schemas';
 import { checkAdminSession } from './actions';
 
 export async function getNavOrder() {
   try {
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await supabase
       .from('site_settings')
       .select('content')
       .eq('id', 'navigation')
@@ -35,6 +37,9 @@ export async function updateNavOrder(order: string[]) {
   }
 
   try {
+    // Validate input shape
+    navigationOrderSchema.parse(order);
+
     // Basic validation: ensure all IDs are valid
     const validIds = MASTER_NAVIGATION.map(n => n.id);
     const sanitizedOrder = order.filter(id => validIds.includes(id));
@@ -60,6 +65,6 @@ export async function updateNavOrder(order: string[]) {
     return { success: true };
   } catch (err: any) {
     console.error("Error updating nav order:", err);
-    return { success: false, error: err.message };
+    return { success: false, error: err.issues?.[0]?.message || err.message };
   }
 }

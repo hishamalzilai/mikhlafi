@@ -1,10 +1,10 @@
-import { supabaseAdmin } from '@/lib/supabase-admin';
+import { supabase } from '@/lib/supabase';
 import VisionListClient from './VisionListClient';
 
 export const revalidate = 60;
 
 async function getStudies() {
-  const { data } = await supabaseAdmin
+  const { data } = await supabase
     .from('studies')
     .select('*')
     .order('published_date', { ascending: false });

@@ -15,8 +15,15 @@ export type SearchResult = {
 export async function searchAll(query: string): Promise<SearchResult[]> {
   if (!query || query.trim().length < 3) return [];
   
-  const trimmedQuery = query.trim();
-  const searchPattern = `%${trimmedQuery}%`;
+  // Cap query length to prevent abuse
+  const trimmedQuery = query.trim().substring(0, 200);
+  
+  // Escape ILIKE special characters to prevent pattern injection
+  const escapedQuery = trimmedQuery
+    .replace(/\\/g, '\\\\')  // Escape backslash first
+    .replace(/%/g, '\\%')    // Escape percent
+    .replace(/_/g, '\\_');   // Escape underscore
+  const searchPattern = `%${escapedQuery}%`;
 
   const [rpcResult, testimonialsResult] = await Promise.all([
     supabase.rpc('search_all', { query_text: trimmedQuery }),

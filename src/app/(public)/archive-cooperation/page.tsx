@@ -37,7 +37,7 @@ export default function ArchiveCooperationPage() {
                   <Landmark className="absolute -left-10 -bottom-10 w-48 h-48 text-slate-100 -rotate-12 pointer-events-none" />
                   <h2 className="text-3xl md:text-4xl font-black text-slate-900 mb-8 leading-tight relative z-10">نداء الواجب الوطني</h2>
                   <p className="text-slate-700 text-xl md:text-2xl font-medium leading-[2.2] text-justify relative z-10">
-                    يدعو الموقع جميع أصدقاء ومحبي ورفاق السياسي والمفكر الوطني والقومي عبد الملك المخلافي، ممن رافقوا مسيرته وتابعوا تجربته، إلى التعاون من خلال إرسال أي صور أو وثائق أو مقالات أو دراسات له أو عنه، وذلك إسهامًا في حفظ الذاكرة الوطنية وصون إرثه الفكري والسياسي.
+                    ترحب إدارة الموقع بالباحثين والمهتمين بالشأن السياسي اليمني وكل من رافق مسيرة الأستاذ عبد الملك المخلافي للمساهمة في إثراء الأرشيف الرقمي. وندعو من يمتلك أي وثائق أو صور أو مقالات تتعلق بمسيرته السياسية إلى مشاركتها معنا، بهدف توثيق وحفظ الذاكرة الوطنية.
                   </p>
                </div>
 

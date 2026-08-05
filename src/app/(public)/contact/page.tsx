@@ -1,5 +1,6 @@
 import React from 'react';
 import { Mail, MapPin, Globe, MessageSquare, Send, Share2 } from 'lucide-react';
+import ContactForm from './ContactForm';
 
 export const dynamic = 'force-static';
 
@@ -36,50 +37,7 @@ export default function ContactPage() {
                      أرسل رسالتك الآن
                   </h3>
                   
-                  <form className="space-y-6">
-                     <div className="grid md:grid-cols-2 gap-6">
-                        <div className="space-y-2">
-                           <label className="text-sm font-black text-slate-700 uppercase tracking-widest">الاسم الكامل</label>
-                           <input 
-                             type="text" 
-                             className="w-full bg-slate-50 border border-slate-200 px-5 py-4 focus:ring-2 focus:ring-[#b18c39] focus:border-transparent outline-none transition-all font-medium text-slate-900" 
-                             placeholder="أدخل اسمك هنا..."
-                           />
-                        </div>
-                        <div className="space-y-2">
-                           <label className="text-sm font-black text-slate-700 uppercase tracking-widest">البريد الإلكتروني</label>
-                           <input 
-                             type="email" 
-                             className="w-full bg-slate-50 border border-slate-200 px-5 py-4 focus:ring-2 focus:ring-[#b18c39] focus:border-transparent outline-none transition-all font-medium text-slate-900" 
-                             placeholder="email@example.com"
-                             dir="ltr"
-                           />
-                        </div>
-                     </div>
-                     
-                     <div className="space-y-2">
-                        <label className="text-sm font-black text-slate-700 uppercase tracking-widest">الموضوع</label>
-                        <input 
-                          type="text" 
-                          className="w-full bg-slate-50 border border-slate-200 px-5 py-4 focus:ring-2 focus:ring-[#b18c39] focus:border-transparent outline-none transition-all font-medium text-slate-900" 
-                          placeholder="ما هو موضوع رسالتك؟"
-                        />
-                     </div>
-                     
-                     <div className="space-y-2">
-                        <label className="text-sm font-black text-slate-700 uppercase tracking-widest">الرسالة</label>
-                        <textarea 
-                          rows={6}
-                          className="w-full bg-slate-50 border border-slate-200 px-5 py-4 focus:ring-2 focus:ring-[#b18c39] focus:border-transparent outline-none transition-all font-medium text-slate-900 resize-none" 
-                          placeholder="اكتب استفسارك أو رسالتك هنا بالتفصيل..."
-                        ></textarea>
-                     </div>
-                     
-                     <button className="w-full bg-slate-900 text-white font-black py-5 uppercase tracking-[0.2em] hover:bg-[#b18c39] transition-all flex items-center justify-center gap-4 shadow-xl group/btn">
-                        إرسال الرسالة
-                        <Send className="w-5 h-5 transition-transform group-hover/btn:-translate-x-2" />
-                     </button>
-                  </form>
+                  <ContactForm />
                </div>
                {/* Accent decoration */}
                <div className="absolute top-0 right-0 w-32 h-1 bg-[#b18c39]"></div>

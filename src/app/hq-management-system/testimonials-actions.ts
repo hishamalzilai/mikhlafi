@@ -1,13 +1,17 @@
 "use server";
 
 import { revalidatePath } from 'next/cache';
+import { supabase } from '@/lib/supabase';
+import { supabaseAdmin } from '@/lib/supabase-admin';
+import { checkAdminSession } from './actions';
+import { testimonialSchema } from '@/lib/schemas';
 
 export async function getTestimonialsAction() {
   const isAdmin = await checkAdminSession();
   if (!isAdmin) return { success: false, error: 'Unauthorized' };
 
   try {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('testimonials')
       .select('*')
       .order('created_at', { ascending: false });
@@ -17,9 +21,6 @@ export async function getTestimonialsAction() {
     return { success: false, error: err.message };
   }
 }
-import { checkAdminSession } from './actions';
-import { testimonialSchema } from '@/lib/schemas';
-import { supabaseAdmin as supabase } from '@/lib/supabase-admin';
 
 export async function getTestimonials() {
   const { data, error } = await supabase
@@ -38,7 +39,7 @@ export async function createTestimonial(formData: any) {
 
   try {
     const validatedData = testimonialSchema.parse(formData);
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('testimonials')
       .insert([validatedData]);
 
@@ -47,7 +48,7 @@ export async function createTestimonial(formData: any) {
     revalidatePath('/hq-management-system/testimonials');
     return data;
   } catch (err: any) {
-     throw new Error(err.errors?.[0]?.message || err.message);
+     throw new Error(err.issues?.[0]?.message || err.message);
   }
 }
 
@@ -57,7 +58,7 @@ export async function updateTestimonial(id: string, formData: any) {
 
   try {
     const validatedData = testimonialSchema.parse(formData);
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('testimonials')
       .update({
         ...validatedData,
@@ -70,7 +71,7 @@ export async function updateTestimonial(id: string, formData: any) {
     revalidatePath('/hq-management-system/testimonials');
     return data;
   } catch (err: any) {
-    throw new Error(err.errors?.[0]?.message || err.message);
+    throw new Error(err.issues?.[0]?.message || err.message);
   }
 }
 
@@ -78,7 +79,7 @@ export async function deleteTestimonial(id: string) {
   const isAdmin = await checkAdminSession();
   if (!isAdmin) throw new Error('Unauthorized');
 
-  const { error } = await supabase
+  const { error } = await supabaseAdmin
     .from('testimonials')
     .delete()
     .eq('id', id);

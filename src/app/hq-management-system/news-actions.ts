@@ -3,6 +3,7 @@
 import { supabaseAdmin } from '@/lib/supabase-admin';
 import { checkAdminSession } from '@/app/hq-management-system/actions';
 import { newsSchema } from '@/lib/schemas';
+import { isValidImageUrl } from '@/lib/validate-url';
 import { revalidatePath } from 'next/cache';
 
 export async function getNewsAction() {
@@ -36,6 +37,11 @@ export async function saveNewsAction(formData: FormData) {
 
     let image_url = formData.get('existing_image_url') as string || '';
 
+    // Reject unsafe image URLs supplied by the client
+    if (image_url && !isValidImageUrl(image_url)) {
+      return { success: false, error: 'رابط الصورة غير آمن أو غير مسموح به' };
+    }
+
     // Handle image upload
     if (imageFile && imageFile.size > 0 && imageFile.name !== 'undefined') {
       const fileExt = imageFile.name.split('.').pop() || 'png';
@@ -61,6 +67,10 @@ export async function saveNewsAction(formData: FormData) {
           .getPublicUrl(filePath);
           
         image_url = publicUrlData.publicUrl;
+
+        if (!isValidImageUrl(image_url)) {
+          return { success: false, error: 'رابط الصورة المرفوعة غير صالح' };
+        }
       } catch (uploadErr: any) {
         console.error("[NewsAction] upload error");
         throw uploadErr;

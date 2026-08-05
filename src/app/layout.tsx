@@ -76,13 +76,13 @@ export default async function RootLayout({
 
   return (
     <html lang="ar" dir="rtl">
-      <body className="min-h-screen selection:bg-amber-100 selection:text-amber-900 bg-[#fafaf9] text-[#1c1917]">
-        <style dangerouslySetInnerHTML={{ __html: `
-          :root {
-            --header-logo-scale: ${headerScale};
-            --footer-logo-scale: ${footerScale};
-          }
-        `}} />
+      <body
+        className="min-h-screen selection:bg-amber-100 selection:text-amber-900 bg-[#fafaf9] text-[#1c1917]"
+        style={{
+          '--header-logo-scale': headerScale,
+          '--footer-logo-scale': footerScale,
+        } as React.CSSProperties}
+      >
         {children}
       </body>
     </html>

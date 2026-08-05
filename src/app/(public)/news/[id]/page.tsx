@@ -1,4 +1,4 @@
-import { supabaseAdmin } from '@/lib/supabase-admin';
+import { supabase } from '@/lib/supabase';
 import { notFound } from 'next/navigation';
 import NewsContent from './NewsContent';
 
@@ -6,7 +6,7 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 3600;
 
 async function getNewsItem(id: string) {
-  const { data, error } = await supabaseAdmin
+  const { data, error } = await supabase
     .from('news')
     .select('*')
     .eq('id', id)

@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import SafeImage from '@/components/SafeImage';
 import {
   Search,
   Menu,
@@ -26,9 +27,10 @@ export const PortalLogo = ({ className, settings, type = 'header' }: { className
     : (settings?.footer_logo_scale || 1.0);
 
   return (
-    <img 
+    <SafeImage 
       src={logoUrl} 
-      alt="الموقع الرسمي لعبدالملك المخلافي" 
+      alt="الموقع الرسمي لعبدالملك المخلافي"
+      fallbackSrc="/logo-last.png"
       style={{ transform: `scale(${scale})`, transition: 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)' }}
       className={`object-contain mix-blend-multiply ${className || ''}`} 
     />

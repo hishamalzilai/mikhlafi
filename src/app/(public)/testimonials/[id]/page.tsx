@@ -1,4 +1,4 @@
-import { supabaseAdmin } from '@/lib/supabase-admin';
+import { supabase } from '@/lib/supabase';
 import { notFound } from 'next/navigation';
 import Content from './Content';
 
@@ -6,7 +6,7 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 3600;
 
 async function getTestimonial(id: string) {
-  const { data, error } = await supabaseAdmin
+  const { data, error } = await supabase
     .from('testimonials')
     .select('*')
     .eq('id', id)

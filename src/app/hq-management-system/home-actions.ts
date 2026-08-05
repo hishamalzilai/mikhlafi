@@ -1,6 +1,7 @@
 "use server";
 
 import { supabaseAdmin } from '@/lib/supabase-admin';
+import { supabase } from '@/lib/supabase';
 import { revalidatePath } from 'next/cache';
 import { homepageSchema } from '@/lib/schemas';
 
@@ -20,18 +21,23 @@ export type HomepageContent = {
 };
 
 export async function getHomepageSettings() {
-  const { data, error } = await supabaseAdmin
-    .from('site_settings')
-    .select('content')
-    .eq('id', 'homepage')
-    .single();
+  try {
+    const { data, error } = await supabase
+      .from('site_settings')
+      .select('content')
+      .eq('id', 'homepage')
+      .single();
 
-  if (error) {
-    console.error("Error fetching homepage settings:", error);
+    if (error) {
+      console.error("Error fetching homepage settings:", error);
+      return null;
+    }
+
+    return data.content as HomepageContent;
+  } catch (err) {
+    console.error("Homepage fetch catch:", err);
     return null;
   }
-
-  return data.content as HomepageContent;
 }
 
 import { checkAdminSession } from './actions';
@@ -54,7 +60,7 @@ export async function updateHomepageSettings(content: HomepageContent) {
       return { success: false, error: error.message };
     }
   } catch (err: any) {
-    return { success: false, error: err.errors?.[0]?.message || err.message };
+    return { success: false, error: err.issues?.[0]?.message || err.message };
   }
 
   revalidatePath('/');

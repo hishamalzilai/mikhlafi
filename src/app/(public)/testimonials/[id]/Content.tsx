@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
+import SafeImage from '@/components/SafeImage';
 import { Calendar, UserRound, ArrowRight, Printer, Download, ChevronRight, ChevronLeft, MessageCircle, Send, Link2, Check, Share2, Quote } from 'lucide-react';
 
 // Smart text splitting for pagination (matching ArticleContent)
@@ -164,7 +165,7 @@ export default function Content({ data }: TestimonialContentProps) {
                        <div className="flex items-center gap-4">
                           <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-[#b18c39]/20 shadow-lg">
                              {data.author_image ? (
-                               <img src={data.author_image} alt={data.author_name} className="w-full h-full object-cover" />
+                               <SafeImage src={data.author_image} alt={data.author_name} className="w-full h-full object-cover" />
                              ) : (
                                <div className="w-full h-full bg-slate-100 flex items-center justify-center text-slate-300">
                                   <UserRound size={32} />

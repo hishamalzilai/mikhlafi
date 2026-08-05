@@ -2,9 +2,10 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowLeft, Shield, Newspaper, Play, Globe, Users, Scale, Archive, BookOpen, Quote, FileText, UserRound } from 'lucide-react';
 import { getHomepageSettings } from '@/app/hq-management-system/home-actions';
-import { supabaseAdmin } from '@/lib/supabase-admin';
+import { supabase } from '@/lib/supabase';
 
 import TimelineCarousel from '@/components/TimelineCarousel';
+import { getMediaThumbnailUrl } from '@/lib/validate-url';
 
 export const revalidate = 60; // Revalidate every minute
 
@@ -12,14 +13,14 @@ export default async function Home() {
   const content = await getHomepageSettings();
   
   // Fetch latest 2 studies
-  const { data: latestStudies } = await supabaseAdmin
+  const { data: latestStudies } = await supabase
     .from('studies')
     .select('*')
     .order('published_date', { ascending: false })
     .limit(2);
 
   // Fetch latest media: 1 Video and 1 Photo
-  const { data: latestVideo } = await supabaseAdmin
+  const { data: latestVideo } = await supabase
     .from('media_library')
     .select('*')
     .eq('type', 'video')
@@ -27,7 +28,7 @@ export default async function Home() {
     .limit(1)
     .single();
 
-  const { data: latestPhoto } = await supabaseAdmin
+  const { data: latestPhoto } = await supabase
     .from('media_library')
     .select('*')
     .eq('type', 'photo')
@@ -36,14 +37,14 @@ export default async function Home() {
     .single();
 
   // Fetch latest 3 news
-  const { data: latestNews } = await supabaseAdmin
+  const { data: latestNews } = await supabase
     .from('news')
     .select('*')
     .order('published_date', { ascending: false })
     .limit(3);
 
   // Fetch latest 3 testimonials
-  const { data: latestTestimonials } = await supabaseAdmin
+  const { data: latestTestimonials } = await supabase
     .from('testimonials')
     .select('*')
     .order('order_index', { ascending: true })
@@ -74,10 +75,7 @@ export default async function Home() {
         {/* 1. سكشن الواجهة (Hero Section) */}
         <section className="grid lg:grid-cols-12 gap-10 md:gap-16 items-center">
           <div className="lg:col-span-7 flex flex-col justify-center order-2 lg:order-1">
-            <div className="flex items-center gap-3 mb-6">
-              <span className="bg-[#b18c39] text-white px-4 py-1.5 text-xs font-black shadow-lg uppercase tracking-[0.2em]">{heroSubtitle}</span>
-            </div>
-            <h1 className="text-4xl md:text-6xl font-black text-slate-900 leading-tight mb-8 drop-shadow-sm">
+            <h1 className="text-4xl md:text-6xl font-black text-slate-900 leading-tight mb-8 drop-shadow-sm mt-4">
               {heroTitle}
             </h1>
             <div className="relative pl-8 md:pl-12 border-r-8 border-[#b18c39] py-4 bg-slate-50 pr-6 md:pr-10 shadow-inner">
@@ -211,7 +209,7 @@ export default async function Home() {
               {/* Video Card */}
               <div className="group relative overflow-hidden min-h-[320px] md:aspect-video bg-black border border-slate-800 shadow-2xl flex items-center justify-center">
                  <Image 
-                   src={latestVideo?.thumbnail_url || "https://images.unsplash.com/photo-1495020689067-958852a7765e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"} 
+                   src={getMediaThumbnailUrl(latestVideo?.thumbnail_url, 'video', "https://images.unsplash.com/photo-1495020689067-958852a7765e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80")} 
                    alt={latestVideo?.title || "فيديوجرافيك المواقف"} 
                    fill
                    sizes="(max-width: 1024px) 100vw, 600px"
@@ -230,7 +228,7 @@ export default async function Home() {
               {/* Photo Card */}
               <div className="group relative overflow-hidden min-h-[320px] md:aspect-video bg-black border border-slate-800 shadow-2xl flex items-center justify-center">
                  <Image 
-                   src={latestPhoto?.thumbnail_url || "https://images.unsplash.com/photo-1577900236166-50e50942d962?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"} 
+                   src={getMediaThumbnailUrl(latestPhoto?.thumbnail_url, 'photo', "https://images.unsplash.com/photo-1577900236166-50e50942d962?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80")} 
                    alt={latestPhoto?.title || "معرض الصور الوطنية"} 
                    fill
                    sizes="(max-width: 1024px) 100vw, 600px"

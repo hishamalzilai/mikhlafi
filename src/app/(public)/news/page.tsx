@@ -1,10 +1,10 @@
-import { supabaseAdmin } from '@/lib/supabase-admin';
+import { supabase } from '@/lib/supabase';
 import NewsListClient from './NewsListClient';
 
 export const revalidate = 60;
 
 async function getNews() {
-  const { data } = await supabaseAdmin
+  const { data } = await supabase
     .from('news')
     .select('*')
     .order('published_date', { ascending: false });

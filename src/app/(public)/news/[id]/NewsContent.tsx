@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
+import SafeImage from '@/components/SafeImage';
 import { Calendar, UserRound, ArrowRight, Printer, Download, ChevronRight, ChevronLeft, MessageCircle, Send, Link2, Check, Share2 } from 'lucide-react';
 
 const splitIntoPages = (textString: string) => {
@@ -116,7 +117,7 @@ export default function NewsContent({ newsItem }: NewsContentProps) {
 
               {currentPage === 1 && newsItem.image_url && (
                   <div className="w-full h-[300px] md:h-[400px] lg:h-[500px] rounded-2xl overflow-hidden mb-12 shadow-md border border-slate-100 relative print:h-auto print:border-none">
-                     <img src={newsItem.image_url} alt={newsItem.title} className="w-full h-full object-cover" />
+                     <SafeImage src={newsItem.image_url} alt={newsItem.title} className="w-full h-full object-cover" />
                   </div>
               )}
               {currentPage === 1 && newsItem.excerpt && (

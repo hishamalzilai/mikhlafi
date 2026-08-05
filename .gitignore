@@ -79,5 +79,15 @@ CLAUDE.md
 *.zip
 *~
 
+# sensitive local files & data
+.env.local
+*.py
+*.JPG
+info.html
+pg_client/
+al_mikhlafi_videos/
+.venv_downloader/
+WhatsApp Unknown*
+
 # scratch scripts
 scratch/
